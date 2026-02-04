@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Exam Questions - PhishGuard.uz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .top-bar h1 { color:#1e293b; font-size:28px; margin:0; }
+
+        .top-bar-right { display:flex; gap:10px; align-items:center; }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            font-family: 'Manrope', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary { background:#2563eb; color:white; box-shadow:0 3px 8px rgba(37,99,235,0.3); }
+        .btn-primary:hover { background:#1d4ed8; transform:translateY(-1px); box-shadow:0 5px 14px rgba(37,99,235,0.4); }
+
+        .btn-danger { background:#dc2626; color:white; padding:8px 14px; font-size:13px; }
+        .btn-danger:hover { background:#b91c1c; }
+
+        .btn-edit { background:#f1f5f9; color:#1e293b; padding:8px 14px; font-size:13px; }
+        .btn-edit:hover { background:#e2e8f0; }
+
+        .back-link {
+            display:inline-flex; align-items:center; gap:6px;
+            color:#2563eb; text-decoration:none; font-weight:600; font-size:14px; margin-bottom:20px;
+        }
+        .back-link:hover { text-decoration:underline; }
+
+        /* ── Question Card ── */
+        .question-card {
+            background:#f8fafc;
+            border:1px solid #e2e8f0;
+            border-radius:14px;
+            margin-bottom:16px;
+            overflow:hidden;
+        }
+
+        .card-header {
+            display:flex; justify-content:space-between; align-items:center;
+            padding:16px 20px; background:white; border-bottom:1px solid #e2e8f0;
+        }
+        .card-header h3 { color:#1e293b; font-size:16px; margin:0; }
+        .card-actions { display:flex; gap:8px; }
+
+        /* ── Language Tabs on cards ── */
+        .lang-tabs { display:flex; border-bottom:2px solid #e2e8f0; }
+
+        .lang-tab {
+            flex:1; padding:10px 16px; text-align:center;
+            font-size:13px; font-weight:700; color:#64748b;
+            cursor:pointer; border:none; background:#f8fafc;
+            transition:all 0.2s; font-family:'Manrope',sans-serif;
+        }
+        .lang-tab.active { color:#2563eb; background:white; border-bottom:3px solid #2563eb; margin-bottom:-2px; }
+        .lang-tab:hover:not(.active) { background:#eef2ff; color:#4338ca; }
+
+        /* ── Card Body ── */
+        .lang-panel { display:none; padding:18px 20px; }
+        .lang-panel.active { display:block; }
+
+        .lang-panel p { color:#475569; font-size:14px; margin:6px 0; line-height:1.5; }
+        .lang-panel p strong { color:#1e293b; font-weight:600; }
+
+        .correct-badge {
+            display:inline-block; margin-left:6px;
+            background:#dcfce7; color:#16a34a;
+            padding:3px 9px; border-radius:6px; font-size:12px; font-weight:700;
+        }
+
+        /* ── Modal ── */
+        .modal-overlay {
+            display:none; position:fixed; inset:0;
+            background:rgba(0,0,0,0.45); z-index:1000;
+            align-items:center; justify-content:center; padding:20px;
+        }
+        .modal-overlay.show { display:flex; }
+
+        .modal {
+            background:white; border-radius:18px;
+            width:100%; max-width:720px; max-height:90vh;
+            overflow-y:auto; box-shadow:0 25px 60px rgba(0,0,0,0.25);
+        }
+
+        .modal-head {
+            padding:24px 28px 16px;
+            display:flex; justify-content:space-between; align-items:center;
+        }
+        .modal-head h2 { color:#1e293b; font-size:20px; margin:0; }
+
+        .modal-close {
+            width:32px; height:32px; border:none; background:#f1f5f9;
+            border-radius:8px; font-size:18px; cursor:pointer;
+            display:flex; align-items:center; justify-content:center;
+            color:#64748b; transition:background 0.2s;
+        }
+        .modal-close:hover { background:#e2e8f0; }
+
+        /* Modal language tabs */
+        .modal-lang-tabs { display:flex; margin:0 28px; border-bottom:2px solid #e2e8f0; }
+        .modal-lang-tab {
+            flex:1; padding:9px; text-align:center;
+            font-size:13px; font-weight:700; color:#64748b;
+            cursor:pointer; border:none; background:#f8fafc;
+            border-radius:8px 8px 0 0; transition:all 0.2s;
+            font-family:'Manrope',sans-serif;
+        }
+        .modal-lang-tab.active { color:#2563eb; background:white; border-bottom:3px solid #2563eb; margin-bottom:-2px; }
+        .modal-lang-tab:hover:not(.active) { background:#eef2ff; }
+
+        .modal-panel { display:none; padding:20px 28px; }
+        .modal-panel.active { display:block; }
+
+        .form-group { margin-bottom:16px; }
+        .form-group label { display:block; font-weight:600; color:#1e293b; font-size:13px; margin-bottom:6px; }
+        .form-group input {
+            width:100%; padding:10px 12px;
+            border:2px solid #e2e8f0; border-radius:8px;
+            font-family:'Manrope',sans-serif; font-size:14px; color:#1e293b;
+            transition:border-color 0.2s;
+        }
+        .form-group input:focus { outline:none; border-color:#2563eb; }
+
+        /* Shared section (correct answer) — always visible */
+        .shared-section { padding:0 28px 20px; }
+        .shared-section label { display:block; font-weight:600; color:#1e293b; font-size:13px; margin-bottom:6px; }
+        .shared-section select {
+            width:100%; padding:10px 12px;
+            border:2px solid #e2e8f0; border-radius:8px;
+            font-family:'Manrope',sans-serif; font-size:14px; color:#1e293b;
+        }
+        .shared-section select:focus { outline:none; border-color:#2563eb; }
+
+        .modal-footer { padding:16px 28px 24px; display:flex; gap:10px; justify-content:flex-end; }
+
+        .btn-cancel {
+            background:#f1f5f9; color:#1e293b;
+            padding:10px 20px; border-radius:10px; border:none;
+            font-family:'Manrope',sans-serif; font-weight:600; font-size:14px; cursor:pointer;
+        }
+        .btn-cancel:hover { background:#e2e8f0; }
+
+        .btn-save {
+            background:#2563eb; color:white;
+            padding:10px 24px; border-radius:10px; border:none;
+            font-family:'Manrope',sans-serif; font-weight:700; font-size:14px; cursor:pointer;
+            box-shadow:0 3px 8px rgba(37,99,235,0.3);
+        }
+        .btn-save:hover { background:#1d4ed8; }
+
+        /* Toast */
+        .toast {
+            position:fixed; bottom:28px; left:50%;
+            transform:translateX(-50%) translateY(100px);
+            background:#1e293b; color:white;
+            padding:12px 24px; border-radius:10px;
+            font-size:14px; font-weight:600; z-index:2000;
+            transition:transform 0.35s cubic-bezier(0.16,1,0.3,1);
+            pointer-events:none;
+        }
+        .toast.show { transform:translateX(-50%) translateY(0); }
+        .toast.success { background:#16a34a; }
+        .toast.error   { background:#dc2626; }
+
+        @media (max-width:640px) {
+            .container { padding:20px 16px; }
+            .modal { max-height:95vh; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <a href="{{ url_for('change_password') }}" class="back-link" style="margin-bottom: 0;">🔒 Change Password</a>
+            <a href="{{ url_for('logout') }}" class="back-link" style="margin-bottom: 0;">🚪 Logout</a>
+        </div>
+
+        <div class="top-bar">
+            <h1>📝 Exam Questions</h1>
+            <div class="top-bar-right">
+                <span style="font-size:13px;color:#64748b;font-weight:600;">{{ questions|length }} question{{ 's' if questions|length != 1 }}</span>
+                <button class="btn btn-primary" onclick="openModal(null)">➕ Add Question</button>
+            </div>
+        </div>
+
+        <!-- Question cards -->
+        {% for q in questions %}
+        <div class="question-card">
+            <div class="card-header">
+                <h3>#{{ q.id }}</h3>
+                <div class="card-actions">
+                    <button class="btn btn-edit" data-question="{{ q|tojson|forceescape }}" onclick="openModal(JSON.parse(this.getAttribute('data-question')))">✏️ Edit</button>
+                    <button class="btn btn-danger" onclick="deleteQuestion({{ q.id }})">🗑️</button>
+                </div>
+            </div>
+
+            <div class="lang-tabs">
+                <button class="lang-tab active" onclick="switchCardTab(this,'en')">English</button>
+                <button class="lang-tab"        onclick="switchCardTab(this,'uz')">O'zbek</button>
+            </div>
+
+            <!-- EN panel -->
+            <div class="lang-panel active" data-lang="en">
+                <p><strong>Q:</strong> {{ q.question }}</p>
+                <p>A) {{ q.option_a }}{% if q.correct_answer == 'a' %}<span class="correct-badge">✓ Correct</span>{% endif %}</p>
+                <p>B) {{ q.option_b }}{% if q.correct_answer == 'b' %}<span class="correct-badge">✓ Correct</span>{% endif %}</p>
+                <p>C) {{ q.option_c }}{% if q.correct_answer == 'c' %}<span class="correct-badge">✓ Correct</span>{% endif %}</p>
+                <p>D) {{ q.option_d }}{% if q.correct_answer == 'd' %}<span class="correct-badge">✓ Correct</span>{% endif %}</p>
+            </div>
+
+            <!-- UZ panel -->
+            <div class="lang-panel" data-lang="uz">
+                <p><strong>S:</strong> {{ q.question_uz or '— (not translated)' }}</p>
+                <p>A) {{ q.option_a_uz or '—' }}{% if q.correct_answer == 'a' %}<span class="correct-badge">✓ To'g'ri</span>{% endif %}</p>
+                <p>B) {{ q.option_b_uz or '—' }}{% if q.correct_answer == 'b' %}<span class="correct-badge">✓ To'g'ri</span>{% endif %}</p>
+                <p>C) {{ q.option_c_uz or '—' }}{% if q.correct_answer == 'c' %}<span class="correct-badge">✓ To'g'ri</span>{% endif %}</p>
+                <p>D) {{ q.option_d_uz or '—' }}{% if q.correct_answer == 'd' %}<span class="correct-badge">✓ To'g'ri</span>{% endif %}</p>
+            </div>
+        </div>
+        {% endfor %}
+
+        {% if not questions %}
+        <div style="text-align:center;padding:60px 20px;color:#64748b;">
+            <div style="font-size:48px;margin-bottom:16px;">📝</div>
+            <p style="font-size:16px;font-weight:600;">No questions yet.</p>
+            <p style="font-size:14px;">Click <strong>Add Question</strong> to create the first one.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- ── Add / Edit Modal ── -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-head">
+                <h2 id="modalTitle">Add Question</h2>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+
+            <div class="modal-lang-tabs">
+                <button class="modal-lang-tab active" onclick="switchModalTab(this,'en')">English</button>
+                <button class="modal-lang-tab"        onclick="switchModalTab(this,'uz')">O'zbek</button>
+            </div>
+
+            <!-- EN inputs -->
+            <div class="modal-panel active" id="panel-en">
+                <div class="form-group">
+                    <label>Question (English)</label>
+                    <input type="text" id="question_en" placeholder="e.g. What is phishing?">
+                </div>
+                <div class="form-group"><label>Option A</label><input type="text" id="option_a_en"></div>
+                <div class="form-group"><label>Option B</label><input type="text" id="option_b_en"></div>
+                <div class="form-group"><label>Option C</label><input type="text" id="option_c_en"></div>
+                <div class="form-group"><label>Option D</label><input type="text" id="option_d_en"></div>
+            </div>
+
+            <!-- UZ inputs -->
+            <div class="modal-panel" id="panel-uz">
+                <div class="form-group">
+                    <label>Savol (O'zbek)</label>
+                    <input type="text" id="question_uz" placeholder="Masalan: Fishing nima?">
+                </div>
+                <div class="form-group"><label>Variant A</label><input type="text" id="option_a_uz"></div>
+                <div class="form-group"><label>Variant B</label><input type="text" id="option_b_uz"></div>
+                <div class="form-group"><label>Variant C</label><input type="text" id="option_c_uz"></div>
+                <div class="form-group"><label>Variant D</label><input type="text" id="option_d_uz"></div>
+            </div>
+
+            <!-- Correct answer — always visible below tabs -->
+            <div class="shared-section">
+                <label>✓ Correct Answer (shared for both languages)</label>
+                <select id="correct_answer">
+                    <option value="a">A</option>
+                    <option value="b">B</option>
+                    <option value="c">C</option>
+                    <option value="d">D</option>
+                </select>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-save"   onclick="saveQuestion()">💾 Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ── card tab switcher ──
+        function switchCardTab(clickedTab, lang) {
+            const card = clickedTab.closest('.question-card');
+            card.querySelectorAll('.lang-tab').forEach(t => t.classList.remove('active'));
+            clickedTab.classList.add('active');
+            card.querySelectorAll('.lang-panel').forEach(p => {
+                p.classList.toggle('active', p.dataset.lang === lang);
+            });
+        }
+
+        // ── modal tab switcher ──
+        function switchModalTab(clickedTab, lang) {
+            document.querySelectorAll('.modal-lang-tab').forEach(t => t.classList.remove('active'));
+            clickedTab.classList.add('active');
+            document.getElementById('panel-en').classList.toggle('active', lang === 'en');
+            document.getElementById('panel-uz').classList.toggle('active', lang === 'uz');
+        }
+
+        // ── open modal ──
+        let editingId = null;
+
+        function openModal(questionObj) {
+            editingId = null;
+
+            // clear all inputs
+            ['question_en','option_a_en','option_b_en','option_c_en','option_d_en',
+             'question_uz','option_a_uz','option_b_uz','option_c_uz','option_d_uz'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            document.getElementById('correct_answer').value = 'a';
+
+            if (questionObj) {
+                editingId = questionObj.id;
+                document.getElementById('modalTitle').textContent = 'Edit Question #' + questionObj.id;
+
+                document.getElementById('question_en').value  = questionObj.question       || '';
+                document.getElementById('option_a_en').value  = questionObj.option_a       || '';
+                document.getElementById('option_b_en').value  = questionObj.option_b       || '';
+                document.getElementById('option_c_en').value  = questionObj.option_c       || '';
+                document.getElementById('option_d_en').value  = questionObj.option_d       || '';
+                document.getElementById('question_uz').value  = questionObj.question_uz    || '';
+                document.getElementById('option_a_uz').value  = questionObj.option_a_uz    || '';
+                document.getElementById('option_b_uz').value  = questionObj.option_b_uz    || '';
+                document.getElementById('option_c_uz').value  = questionObj.option_c_uz    || '';
+                document.getElementById('option_d_uz').value  = questionObj.option_d_uz    || '';
+                document.getElementById('correct_answer').value = questionObj.correct_answer || 'a';
+            } else {
+                document.getElementById('modalTitle').textContent = 'Add New Question';
+            }
+
+            // reset modal tabs → EN first
+            document.querySelectorAll('.modal-lang-tab').forEach((t,i) => t.classList.toggle('active', i===0));
+            document.getElementById('panel-en').classList.add('active');
+            document.getElementById('panel-uz').classList.remove('active');
+
+            document.getElementById('modalOverlay').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('show');
+        }
+
+        // backdrop click closes
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // ── save ──
+        function saveQuestion() {
+            const enQ = document.getElementById('question_en').value.trim();
+            if (!enQ) { showToast('English question is required', 'error'); return; }
+
+            const payload = {
+                question:       enQ,
+                option_a:       document.getElementById('option_a_en').value.trim(),
+                option_b:       document.getElementById('option_b_en').value.trim(),
+                option_c:       document.getElementById('option_c_en').value.trim(),
+                option_d:       document.getElementById('option_d_en').value.trim(),
+                correct_answer: document.getElementById('correct_answer').value,
+                question_uz:    document.getElementById('question_uz').value.trim(),
+                option_a_uz:    document.getElementById('option_a_uz').value.trim(),
+                option_b_uz:    document.getElementById('option_b_uz').value.trim(),
+                option_c_uz:    document.getElementById('option_c_uz').value.trim(),
+                option_d_uz:    document.getElementById('option_d_uz').value.trim()
+            };
+
+            const url = editingId
+                ? `/admin/update-question/${editingId}`
+                : '/admin/add-question';
+
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(editingId ? 'Question updated ✓' : 'Question added ✓', 'success');
+                    closeModal();
+                    window.location.reload();
+                } else {
+                    showToast('Server error', 'error');
+                }
+            })
+            .catch(() => showToast('Network error — try again', 'error'));
+        }
+
+        // ── delete ──
+        function deleteQuestion(id) {
+            if (!confirm('Delete question #' + id + '? This cannot be undone.')) return;
+            fetch(`/admin/delete-question/${id}`, { method: 'POST' })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) { showToast('Question deleted', 'success'); window.location.reload(); }
+            })
+            .catch(() => showToast('Network error — try again', 'error'));
+        }
+
+        // ── toast ──
+        let toastTimer = null;
+        function showToast(msg, type) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast ' + (type || '');
+            t.classList.add('show');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2 - Final Quiz - PhishGuard.uz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --bg-gradient-start: #3b82f6;
+            --bg-gradient-end: #2563eb;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-white: #ffffff;
+            --bg-light: #f1f5f9;
+            --border-color: #e2e8f0;
+            --error-red: #dc2626;
+            --success-green: #16a34a;
+            --warning-yellow: #f59e0b;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(37,99,235,0.12);
+            --shadow-lg: 0 20px 40px rgba(37,99,235,0.15);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Header */
+        .module-header {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--success-green), #4ade80);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .module-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .module-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Quiz Content */
+        .quiz-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .quiz-question {
+            background: var(--bg-light);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            padding: 14px 18px;
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .quiz-option:hover:not(.disabled) {
+            border-color: var(--primary-blue);
+            background: #f0f9ff;
+            transform: translateX(4px);
+        }
+
+        .quiz-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success-green);
+            background: #dcfce7;
+            font-weight: 700;
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error-red);
+            background: #fee2e2;
+        }
+
+        .feedback {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: var(--success-green);
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            color: var(--error-red);
+        }
+
+        /* Submit Section */
+        .submit-section {
+            text-align: center;
+            margin-top: 32px;
+            padding: 32px;
+            background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+            border-radius: 16px;
+        }
+
+        .submit-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37,99,235,0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .score-display {
+            margin-top: 24px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        /* Certificate */
+        .certificate {
+            display: none;
+            margin-top: 32px;
+            padding: 40px;
+            background: linear-gradient(135deg, #dcfce7, #86efac);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            animation: slideDown 0.8s ease;
+        }
+
+        .certificate.show {
+            display: block;
+        }
+
+        .certificate-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .certificate-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #166534;
+            margin-bottom: 16px;
+        }
+
+        .certificate-text {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #14532d;
+            margin-bottom: 12px;
+        }
+
+        .certificate-module {
+            font-size: 18px;
+            font-weight: 700;
+            color: #166534;
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-btn-prev {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .nav-btn-prev:hover {
+            background: #e2e8f0;
+            transform: translateX(-4px);
+        }
+
+        .nav-btn-home {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+
+        .nav-btn-home:hover {
+            background: var(--primary-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37,99,235,0.4);
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 16px;
+            }
+
+            .module-header {
+                padding: 24px;
+            }
+
+            .module-title {
+                font-size: 24px;
+            }
+
+            .quiz-content {
+                padding: 24px;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                max-width: 100%;
+            }
+
+            .certificate-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+            <a href="{{ url_for('home') }}" class="btn" style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-decoration: none; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span>Home</span>
+            </a>
+    <!-- Language Switch -->
+    <div class="lang-switch">
+        <button class="lang-btn active" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="uz">O'zbek</button>
+    </div>
+
+    <div class="page-container">
+        <!-- Module Header -->
+        <div class="module-header">
+            <div class="module-badge">
+                <span>🎓</span>
+                <span data-translate="module-badge">Module 2 - Final Quiz</span>
+            </div>
+            <h1 class="module-title" data-translate="module-title">Telegram & SMS phishing final quiz</h1>
+            <p class="module-subtitle" data-translate="module-subtitle">
+                Test your knowledge about Telegram and SMS phishing attacks
+            </p>
+        </div>
+
+        <!-- Quiz Content -->
+        <div class="quiz-content">
+            <!-- Question 1 -->
+            <div class="quiz-question" id="q1">
+                <p class="question-number" data-translate="q1-number">Question 1 of 8</p>
+                <p class="question-text" data-translate="q1-text">
+                    What should you do if a Telegram bot asks for your verification code?
+                </p>
+                <div class="quiz-options">
+                    <button class="quiz-option" onclick="checkAnswer(1, false)" data-translate="q1-a">
+                        Send the code to verify
+                    </button>
+                    <button class="quiz-option" onclick="checkAnswer(1, true)" data-translate="q1-b">
+                        Never share the code and report the bot
+                    </button>
+                </div>
+                <div class="feedback" id="f1"></div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="quiz-question" id="q2">
+                <p class="question-number" data-translate="q2-number">Question 2 of 8</p>
+                <p class="question-text" data-translate="q2-text">
+                    What is a common sign of Telegram phishing?
+                </p>
+                <div class="quiz-options">
+                    <button class="quiz-option" onclick="checkAnswer(2, true)" data-translate="q2-a">
+                        Fake admin or support messages
+                    </button>
+                    <button class="quiz-option" onclick="checkAnswer(2, false)" data-translate="q2-b">
+                        Messages from your real contacts
+                    </button>
+                </div>
+                <div class="feedback" id="f2"></div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="quiz-question" id="q3">
+                <p class="question-number" data-translate="q3-number">Question 3 of 8</p>
+                <p class="question-text" data-translate="q3-text">
+                    What happens if you install an APK file sent by a hacked Telegram account?
+                </p>
+                <div class="quiz-options">
+                    <button class="quiz-option" onclick="checkAnswer(3, false)" data-translate="q3-a">
+                        You'll get access to new Telegram features
+                    </button>
+                    <button class="quiz-option" onclick="checkAnswer(3, true)" data-translate="q3-b">
+                        A malicious app may take over your account
+                    </button>
+                </div>
+                <div class="feedback" id="f3"></div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="quiz-question" id="q4">
+                <p class="question-number" data-translate="q4-number">Question 4 of 8</p>
+                <p class="question-text" data-translate="q4-text">
+                    How can you verify if an email claiming to be from a bank is real?
+                </p>
+                <div class="quiz-options">
+                    <button class="quiz-option" onclick="checkAnswer(4, true)" data-translate="q4-a">
+                        Check the sender's email domain and verify directly
+                    </button>
+                    <button class="quiz-option" onclick="checkAnswer(4, false)" data-translate="q4-b">
+                        Click the link to see where it leads
+                    </button>
+                </div>
+                <div class="feedback" id="f4"></div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="quiz-question" id="q5">
+                <p class="question-number" data-translate="q5-number">Question 5 of 8</p>
+                <p class="question-text" data-translate="q5-text">
+                    What is the safest response to an SMS saying your tax payment is overdue?
+                </p>
+                <div class="quiz-options">
+                    <button class="quiz-option" onclick="checkAnswer(5, true)" data-translate="q5-a">
+                        Ignore and verify via official website
+                    </button>
+                    <button class="quiz-option" onclick="checkAnswer(5, false)" data-translate="q5-b">
+                        Click the link to pay quickly
+                    </button>
+                </div>
+                <div class="feedback" id="f5"></div>
+            </div>
+
+            <!-- Question 6 -->
+            <div class="quiz-question" id="q6">
+                <p class="question-number" data-translate="q6-number">Question 6 of 8</p>
+                <p class="question-text" data-translate="q6-text">
+                    What does "smishing" mean?
+                </p>
+                <div class="quiz-options">
+                    <button class="quiz-option" onclick="checkAnswer(6, true)" data-translate="q6-a">
+                        Phishing via SMS
+                    </button>
+                    <button class="quiz-option" onclick="checkAnswer(6, false)" data-translate="q6-b">
+                        Voice phishing over calls
+                    </button>
+                </div>
+                <div class="feedback" id="f6"></div>
+            </div>
+
+            <!-- Question 7 -->
+            <div class="quiz-question" id="q7">
+                <p class="question-number" data-translate="q7-number">Question 7 of 8</p>
+                <p class="question-text" data-translate="q7-text">
+                    What is the purpose of phishing messages?
+                </p>
+                <div class="quiz-options">
+                    <button class="quiz-option" onclick="checkAnswer(7, true)" data-translate="q7-a">
+                        To steal personal or financial information
+                    </button>
+                    <button class="quiz-option" onclick="checkAnswer(7, false)" data-translate="q7-b">
+                        To promote legitimate products
+                    </button>
+                </div>
+                <div class="feedback" id="f7"></div>
+            </div>
+
+            <!-- Question 8 -->
+            <div class="quiz-question" id="q8">
+                <p class="question-number" data-translate="q8-number">Question 8 of 8</p>
+                <p class="question-text" data-translate="q8-text">
+                    Which of these is a safe Telegram domain?
+                </p>
+                <div class="quiz-options">
+                    <button class="quiz-option" onclick="checkAnswer(8, true)" data-translate="q8-a">
+                        https://telegram.org
+                    </button>
+                    <button class="quiz-option" onclick="checkAnswer(8, false)" data-translate="q8-b">
+                        https://teleqram-support.net
+                    </button>
+                </div>
+                <div class="feedback" id="f8"></div>
+            </div>
+
+            <!-- Submit Section -->
+            <div class="submit-section">
+                <button type="button" class="submit-btn" onclick="showScore()" data-translate="btn-submit">
+                    🏆 Submit quiz
+                </button>
+                <div class="score-display" id="scoreDisplay"></div>
+            </div>
+
+            <!-- Certificate -->
+            <div class="certificate" id="certificate">
+                <div class="certificate-icon">🎓</div>
+                <h2 class="certificate-title" data-translate="cert-title">Congratulations!</h2>
+                <p class="certificate-text" data-translate="cert-text1">
+                    You have successfully completed
+                </p>
+                <p class="certificate-module" data-translate="cert-module">
+                    PhishGuard Module 2: Telegram & SMS Phishing Awareness
+                </p>
+                <p class="certificate-text" data-translate="cert-text2">
+                    Keep practicing safe digital habits — and remember: Think Before You Click!
+                </p>
+                <button type="button" class="submit-btn" style="margin-top:20px;" onclick="completeModule(2)" data-translate="btn-complete-module">
+                    ✅ Complete Module 2
+                </button>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <a href="{{ url_for('lesson', module=2, lesson=5) }}" class="nav-btn nav-btn-prev">
+                    <span>⬅️</span>
+                    <span data-translate="btn-prev">Previous lesson</span>
+                </a>
+                <a href="{{ url_for('home') }}" class="nav-btn nav-btn-home">
+                    <span data-translate="btn-home">Back to home</span>
+                    <span>🏠</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translations
+        const translations = {
+            en: {
+                'module-badge': 'Module 2 - Final Quiz',
+                'module-title': 'Telegram & SMS phishing final quiz',
+                'module-subtitle': 'Test your knowledge about Telegram and SMS phishing attacks',
+                'q1-number': 'Question 1 of 8',
+                'q1-text': 'What should you do if a Telegram bot asks for your verification code?',
+                'q1-a': 'Send the code to verify',
+                'q1-b': 'Never share the code and report the bot',
+                'q2-number': 'Question 2 of 8',
+                'q2-text': 'What is a common sign of Telegram phishing?',
+                'q2-a': 'Fake admin or support messages',
+                'q2-b': 'Messages from your real contacts',
+                'q3-number': 'Question 3 of 8',
+                'q3-text': 'What happens if you install an APK file sent by a hacked Telegram account?',
+                'q3-a': 'You\'ll get access to new Telegram features',
+                'q3-b': 'A malicious app may take over your account',
+                'q4-number': 'Question 4 of 8',
+                'q4-text': 'How can you verify if an email claiming to be from a bank is real?',
+                'q4-a': 'Check the sender\'s email domain and verify directly',
+                'q4-b': 'Click the link to see where it leads',
+                'q5-number': 'Question 5 of 8',
+                'q5-text': 'What is the safest response to an SMS saying your tax payment is overdue?',
+                'q5-a': 'Ignore and verify via official website',
+                'q5-b': 'Click the link to pay quickly',
+                'q6-number': 'Question 6 of 8',
+                'q6-text': 'What does "smishing" mean?',
+                'q6-a': 'Phishing via SMS',
+                'q6-b': 'Voice phishing over calls',
+                'q7-number': 'Question 7 of 8',
+                'q7-text': 'What is the purpose of phishing messages?',
+                'q7-a': 'To steal personal or financial information',
+                'q7-b': 'To promote legitimate products',
+                'q8-number': 'Question 8 of 8',
+                'q8-text': 'Which of these is a safe Telegram domain?',
+                'q8-a': 'https://telegram.org',
+                'q8-b': 'https://teleqram-support.net',
+                'btn-submit': '🏆 Submit quiz',
+                'btn-prev': 'Previous lesson',
+                'btn-home': 'Back to home',
+                'feedback-correct': '✅ Correct!',
+                'feedback-incorrect': '❌ Incorrect. Review the lessons for help.',
+                'score-text': 'Your score: {score}/8 ({percent}%)',
+                'score-fail': '❌ You need at least 70% to pass. Try again!',
+                'cert-title': 'Congratulations!',
+                'cert-text1': 'You have successfully completed',
+                'cert-module': 'PhishGuard Module 2: Telegram & SMS Phishing Awareness',
+                'cert-text2': 'Keep practicing safe digital habits — and remember: Think Before You Click!',
+                'btn-complete-module': '✅ Complete Module 2'
+            },
+            uz: {
+                'module-badge': '2-modul - Yakuniy test',
+                'module-title': 'Telegram va SMS fishing yakuniy testi',
+                'module-subtitle': 'Telegram va SMS fishing hujumlari haqidagi bilimingizni sinab ko\'ring',
+                'q1-number': '8 tadan 1-savol',
+                'q1-text': 'Agar Telegram bot sizdan tasdiqlash kodini so\'rasa, nima qilishingiz kerak?',
+                'q1-a': 'Tasdiqlash uchun kodni yuboring',
+                'q1-b': 'Hech qachon kodni almashmaslik va botni xabar berish',
+                'q2-number': '8 tadan 2-savol',
+                'q2-text': 'Telegram fishingning keng tarqalgan belgisi nima?',
+                'q2-a': 'Soxta admin yoki qo\'llab-quvvatlash xabarlari',
+                'q2-b': 'Haqiqiy kontaktlaringizdan xabarlar',
+                'q3-number': '8 tadan 3-savol',
+                'q3-text': 'Buzilgan Telegram hisobi tomonidan yuborilgan APK faylini o\'rnatsangiz nima bo\'ladi?',
+                'q3-a': 'Yangi Telegram funksiyalariga kirishingiz mumkin',
+                'q3-b': 'Zararli ilova hisobingizni egallashi mumkin',
+                'q4-number': '8 tadan 4-savol',
+                'q4-text': 'Bankdan kelgan deb da\'vo qiluvchi elektron xat haqiqiy ekanligini qanday tekshirish mumkin?',
+                'q4-a': 'Jo\'natuvchining elektron pochta domenini tekshiring va to\'g\'ridan-to\'g\'ri tasdiqlang',
+                'q4-b': 'U qaerga olib borishini ko\'rish uchun havolani bosing',
+                'q5-number': '8 tadan 5-savol',
+                'q5-text': 'Soliq to\'lovingiz muddati o\'tgan degan SMS ga eng xavfsiz javob nima?',
+                'q5-a': 'E\'tiborsiz qoldiring va rasmiy veb-sayt orqali tekshiring',
+                'q5-b': 'Tez to\'lash uchun havolani bosing',
+                'q6-number': '8 tadan 6-savol',
+                'q6-text': '"Smishing" nimani anglatadi?',
+                'q6-a': 'SMS orqali fishing',
+                'q6-b': 'Qo\'ng\'iroqlar orqali ovozli fishing',
+                'q7-number': '8 tadan 7-savol',
+                'q7-text': 'Fishing xabarlarining maqsadi nima?',
+                'q7-a': 'Shaxsiy yoki moliyaviy ma\'lumotlarni o\'g\'irlash',
+                'q7-b': 'Qonuniy mahsulotlarni targ\'ib qilish',
+                'q8-number': '8 tadan 8-savol',
+                'q8-text': 'Quyidagilardan qaysi biri xavfsiz Telegram domeni?',
+                'q8-a': 'https://telegram.org',
+                'q8-b': 'https://teleqram-support.net',
+                'btn-submit': '🏆 Testni topshirish',
+                'btn-prev': 'Oldingi dars',
+                'btn-home': 'Bosh sahifaga qaytish',
+                'feedback-correct': '✅ To\'g\'ri!',
+                'feedback-incorrect': '❌ Noto\'g\'ri. Yordam uchun darslarni ko\'rib chiqing.',
+                'score-text': 'Sizning natijangiz: 8 dan {score} ({percent}%)',
+                'score-fail': '❌ O\'tish uchun kamida 70% kerak. Qaytadan urinib ko\'ring!',
+                'cert-title': 'Tabriklaymiz!',
+                'cert-text1': 'Siz muvaffaqiyatli tugatdingiz',
+                'cert-module': 'PhishGuard 2-modul: Telegram va SMS Fishing Xabardorligi',
+                'cert-text2': 'Xavfsiz raqamli odatlarni davom ettiring — va esda tuting: Bosishdan oldin o\'ylab ko\'ring!',
+                'btn-complete-module': '✅ 2-modulni tugallash'
+            }
+        };
+
+        let currentLang = localStorage.getItem('language') || 'en';
+        const correctAnswers = { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true };
+        let score = 0;
+        let answered = {};
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.lang === currentLang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            updateLanguage();
+            
+            initLanguage();
+        });
+
+        function initLanguage() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === currentLang);
+            });
+            updateLanguage();
+        }
+
+        // Language switching
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentLang = btn.dataset.lang;
+                localStorage.setItem('language', currentLang);
+                updateLanguage();
+            });
+        });
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.dataset.translate;
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        function checkAnswer(q, choice) {
+            // choice comes from onclick as a boolean literal — it arrives correctly typed
+            // but normalize just in case: if it's the string "true"/"false", convert it
+            if (typeof choice === 'string') {
+                choice = choice === 'true';
+            }
+
+            const feedback = document.getElementById('f' + q);
+            if (!feedback) return;
+
+            if (answered[q]) return; // Prevent re-answering
+            answered[q] = true;
+
+            // Find the parent question container
+            const question = feedback.closest('.quiz-question') || feedback.parentElement;
+            const options = question.querySelectorAll('.quiz-option');
+
+            // Disable all options
+            options.forEach(opt => opt.classList.add('disabled'));
+
+            // Highlight correct answer green, wrong answer red
+            const correctChoice = correctAnswers[q];
+            options.forEach(opt => {
+                const onclickAttr = opt.getAttribute('onclick');
+                if (onclickAttr) {
+                    const match = onclickAttr.match(/checkAnswer\s*\(\s*\d+\s*,\s*(true|false)\s*\)/);
+                    if (match) {
+                        const optValue = match[1] === 'true';
+                        if (optValue === correctChoice) {
+                            opt.classList.add('correct');
+                        }
+                        if (optValue === choice && choice !== correctChoice) {
+                            opt.classList.add('incorrect');
+                        }
+                    }
+                }
+            });
+
+            // Show feedback
+            if (choice === correctAnswers[q]) {
+                feedback.textContent = translations[currentLang]['feedback-correct'];
+                feedback.className = 'feedback show correct';
+                score++;
+            } else {
+                feedback.textContent = translations[currentLang]['feedback-wrong'];
+                feedback.className = 'feedback show wrong';
+            }
+
+            // Check if all answered → show score
+            const answeredCount = Object.keys(answered).length;
+            if (answeredCount === 8) {
+                setTimeout(() => showScore(), 600);
+            }
+        }
+
+        function showScore() {
+            // Guard: don't show score until all questions are answered
+            if (Object.keys(answered).length < 8) {
+                alert(currentLang === 'uz'
+                    ? 'Barcha 8 savolga javob bering!'
+                    : 'Please answer all 8 questions first!');
+                return;
+            }
+            const total = 8;
+            const percent = Math.round((score / total) * 100);
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const certificate = document.getElementById('certificate');
+
+            let scoreText = translations[currentLang]['score-text']
+                .replace('{score}', score)
+                .replace('{percent}', percent);
+
+            scoreDisplay.textContent = scoreText;
+
+            if (percent >= 70) {
+                fetch('/record-quiz-pass/2', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+                certificate.classList.add('show');
+                certificate.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                certificate.classList.remove('show');
+                scoreDisplay.textContent += ' — ' + translations[currentLang]['score-fail'];
+            }
+        }
+    
+        function completeModule(module) {
+            fetch('/complete-module/' + module, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirect;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+    </script>
+</body>
+</html>

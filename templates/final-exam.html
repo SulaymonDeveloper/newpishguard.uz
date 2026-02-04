@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard Final Exam - All Modules - PhishGuard.uz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --bg-gradient-start: #3b82f6;
+            --bg-gradient-end: #2563eb;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-white: #ffffff;
+            --bg-light: #f1f5f9;
+            --border-color: #e2e8f0;
+            --error-red: #dc2626;
+            --success-green: #16a34a;
+            --warning-yellow: #f59e0b;
+            --gold: #eab308;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(37,99,235,0.12);
+            --shadow-lg: 0 20px 40px rgba(37,99,235,0.15);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Header */
+        .module-header {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 24px;
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 3px solid var(--gold);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--gold), #facc15);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(234, 179, 8, 0.4);
+        }
+
+        .module-title {
+            font-size: 36px;
+            font-weight: 800;
+            color: #78350f;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .module-subtitle {
+            font-size: 17px;
+            color: #92400e;
+            line-height: 1.6;
+            font-weight: 600;
+        }
+
+        /* Quiz Content */
+        .quiz-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .quiz-question {
+            background: var(--bg-light);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+            border-left: 5px solid var(--primary-blue);
+        }
+
+        .quiz-question.scenario {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-left: 5px solid var(--gold);
+        }
+
+        .question-number {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 8px;
+        }
+
+        .scenario-badge {
+            display: inline-block;
+            background: var(--gold);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .scenario-context {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-dark);
+            border-left: 3px solid var(--gold);
+        }
+
+        .scenario-context strong {
+            color: var(--gold);
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            padding: 16px 20px;
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .quiz-option:hover:not(.disabled) {
+            border-color: var(--primary-blue);
+            background: #eff6ff;
+            transform: translateX(4px);
+        }
+
+        .quiz-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success-green);
+            background: #dcfce7;
+            font-weight: 700;
+        }
+
+        .quiz-option.selected {
+            border-color: var(--primary-blue);
+            background: #dbeafe;
+            font-weight: 600;
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error-red);
+            background: #fee2e2;
+        }
+
+        .feedback {
+            margin-top: 16px;
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+            line-height: 1.6;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: var(--success-green);
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            color: var(--error-red);
+        }
+
+        /* Submit Section */
+        .submit-section {
+            text-align: center;
+            margin-top: 40px;
+            padding: 40px;
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border-radius: 16px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, var(--gold), #facc15);
+            color: white;
+            border: none;
+            padding: 18px 56px;
+            border-radius: 14px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(234, 179, 8, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(234, 179, 8, 0.5);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .score-display {
+            margin-top: 28px;
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary-blue);
+        }
+
+        /* Certificate */
+        .certificate {
+            display: none;
+            margin-top: 40px;
+            padding: 50px;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            animation: slideDown 0.8s ease;
+            border: 4px solid var(--gold);
+        }
+
+        .certificate.show {
+            display: block;
+        }
+
+        .certificate-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .certificate-title {
+            font-size: 32px;
+            font-weight: 900;
+            color: #78350f;
+            margin-bottom: 20px;
+        }
+
+        .certificate-text {
+            font-size: 17px;
+            line-height: 1.8;
+            color: #92400e;
+            margin-bottom: 14px;
+            font-weight: 600;
+        }
+
+        .certificate-level {
+            font-size: 24px;
+            font-weight: 800;
+            color: #78350f;
+            margin-top: 20px;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .nav-btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+
+        .nav-btn:hover {
+            background: var(--primary-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37,99,235,0.4);
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 16px;
+            }
+
+            .module-header {
+                padding: 28px;
+            }
+
+            .module-title {
+                font-size: 28px;
+            }
+
+            .quiz-content {
+                padding: 24px;
+            }
+
+            .certificate-title {
+                font-size: 26px;
+            }
+
+            .submit-btn {
+                padding: 16px 40px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="{{ url_for('home') }}" class="btn" style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-decoration: none; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        <span>Home</span>
+    </a>
+    <!-- Language Switch -->
+    <div class="lang-switch">
+        <a href="{{ url_for('set_lang', lang='en') }}" class="lang-btn {% if lang == 'en' %}active{% endif %}" style="text-decoration:none;display:inline-block;">English</a>
+        <a href="{{ url_for('set_lang', lang='uz') }}" class="lang-btn {% if lang == 'uz' %}active{% endif %}" style="text-decoration:none;display:inline-block;">O'zbek</a>
+    </div>
+
+    <div class="page-container">
+        <!-- Module Header -->
+        <div class="module-header">
+            <div class="module-badge">
+                <span>🏆</span>
+                <span data-translate="module-badge">FINAL EXAM - ALL MODULES</span>
+            </div>
+            <h1 class="module-title" data-translate="module-title">PhishGuard Master Certification</h1>
+            <p class="module-subtitle" data-translate="module-subtitle">
+                Comprehensive 20-question exam testing all phishing detection skills from Modules 1, 2, and 3
+            </p>
+        </div>
+
+        <!-- Quiz Content -->
+        <div class="quiz-content" id="quizContainer">
+            {% for q in questions %}
+            <div class="quiz-question" id="question-{{ q['id'] }}">
+                <div class="question-number">{% if lang == 'uz' %}{{ questions|length }} savoldan {{ loop.index }}{% else %}Question {{ loop.index }} of {{ questions|length }}{% endif %}</div>
+                <p class="question-text">{% if lang == 'uz' %}{{ q['question_uz'] or q['question'] }}{% else %}{{ q['question'] }}{% endif %}</p>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="selectAnswer({{ q['id'] }}, 'a')" data-value="a">
+                        A) {% if lang == 'uz' %}{{ q['option_a_uz'] or q['option_a'] }}{% else %}{{ q['option_a'] }}{% endif %}
+                    </div>
+                    <div class="quiz-option" onclick="selectAnswer({{ q['id'] }}, 'b')" data-value="b">
+                        B) {% if lang == 'uz' %}{{ q['option_b_uz'] or q['option_b'] }}{% else %}{{ q['option_b'] }}{% endif %}
+                    </div>
+                    <div class="quiz-option" onclick="selectAnswer({{ q['id'] }}, 'c')" data-value="c">
+                        C) {% if lang == 'uz' %}{{ q['option_c_uz'] or q['option_c'] }}{% else %}{{ q['option_c'] }}{% endif %}
+                    </div>
+                    <div class="quiz-option" onclick="selectAnswer({{ q['id'] }}, 'd')" data-value="d">
+                        D) {% if lang == 'uz' %}{{ q['option_d_uz'] or q['option_d'] }}{% else %}{{ q['option_d'] }}{% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Submit Section -->
+            <div class="submit-section">
+                <button type="button" class="submit-btn" onclick="submitExam()" data-translate="btn-submit">
+                    🏆 Submit Final Exam
+                </button>
+                <div class="score-display" id="scoreDisplay"></div>
+            </div>
+
+            <!-- Certificate -->
+            <div class="certificate" id="certificate">
+                <div class="certificate-icon">🎓</div>
+                <h2 class="certificate-title" data-translate="cert-title">Congratulations!</h2>
+                <p class="certificate-text" data-translate="cert-text1">
+                    You have successfully completed
+                </p>
+                <p class="certificate-text" style="font-weight: 800; font-size: 20px;" data-translate="cert-module">
+                    PhishGuard Complete Certification Program
+                </p>
+                <p class="certificate-text" data-translate="cert-text2">
+                    All 3 Modules: Introduction to Phishing, Telegram & SMS Phishing, and Advanced Detection
+                </p>
+                <div class="certificate-level" id="certificateLevel"></div>
+                <p class="certificate-text" style="margin-top: 20px;" data-translate="cert-text3">
+                    You are now equipped to identify and avoid phishing attacks. Stay vigilant!
+                </p>
+                
+                <!-- Certificate Generator -->
+                <div style="margin-top: 40px; padding: 30px; background: white; border-radius: 15px;">
+                    <h3 style="color: #78350f; margin-bottom: 20px; font-size: 22px;" data-translate="cert-generate-title">
+                        📜 Generate Your Official Certificate
+                    </h3>
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #555; text-align: left;" data-translate="cert-name-label">
+                            Your Name:
+                        </label>
+                        <input type="text" id="certFullName" value="{{ name }}{% if name and surname %} {% endif %}{{ surname }}"
+                            placeholder="Name Surname" 
+                            style="width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; font-family: 'Manrope', sans-serif;">
+                    </div>
+                    <button type="button" onclick="generateCertificate()" 
+                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 14px 32px; border-radius: 10px; font-family: 'Manrope', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%;"
+                        data-translate="cert-generate-btn">
+                        🎓 Generate & Download Certificate
+                    </button>
+
+                    <!-- Post-download navigation (shown after successful PDF save) -->
+                    <div id="postDownloadBtns" style="margin-top: 18px; display: none; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                        <a href="{{ url_for('certificate') }}" style="display:inline-block; padding:12px 24px; background:#2563eb; color:white; border-radius:12px; text-decoration:none; font-weight:700; font-size:15px; font-family:'Manrope',sans-serif;" data-translate="btn-view-cert">
+                            🎓 View Certificate
+                        </a>
+                        <a href="{{ url_for('home') }}" style="display:inline-block; padding:12px 24px; background:#f1f5f9; color:#1e293b; border-radius:12px; text-decoration:none; font-weight:700; font-size:15px; font-family:'Manrope',sans-serif;" data-translate="btn-return-dashboard">
+                            🏠 Return to Dashboard
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Return to Dashboard button (inside certificate block) -->
+                <a href="{{ url_for('home') }}" style="display:inline-block; margin-top:24px; padding:12px 28px; background:#2563eb; color:white; border-radius:12px; text-decoration:none; font-weight:700; font-size:15px;" data-translate="btn-home">
+                    🏠 Return to Dashboard
+                </a>
+                
+                <!-- Hidden Certificate Template -->
+                <div id="certificateTemplate" style="position: fixed; left: -9999px; top: 0;">
+                    <div id="certificateCanvas" style="width: 1122px; height: 793px; background: white; position: relative; overflow: hidden;">
+                        <div style="position: absolute; width: 100%; height: 100%; overflow: hidden;">
+                            <div style="position: absolute; top: -50px; left: -50px; width: 250px; height: 250px; background: radial-gradient(circle, rgba(102, 126, 234, 0.2) 0%, transparent 70%); border-radius: 0 0 100% 0;"></div>
+                            <div style="position: absolute; bottom: -50px; right: -50px; width: 250px; height: 250px; background: radial-gradient(circle, rgba(249, 168, 37, 0.2) 0%, transparent 70%); border-radius: 100% 0 0 0;"></div>
+                        </div>
+                        
+                        <div style="position: absolute; top: 30px; left: 30px; right: 30px; bottom: 30px; border: 8px solid transparent; border-image: linear-gradient(135deg, #667eea 0%, #f9a825 50%, #667eea 100%); border-image-slice: 1;"></div>
+                        <div style="position: absolute; top: 45px; left: 45px; right: 45px; bottom: 45px; border: 2px solid #e0e0e0;"></div>
+                        
+                        <div style="position: relative; z-index: 10; padding: 60px 60px 50px; text-align: center;">
+                            <div style="width: 100px; height: 100px; margin: 0 auto 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 48px; box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);">🎓</div>
+                            <div style="font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 900; color: #667eea; margin-bottom: 8px; letter-spacing: 2px;">CERTIFICATE</div>
+                            <div style="font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 400; color: #f9a825; margin-bottom: 25px; letter-spacing: 8px;">OF COMPLETION</div>
+                            <div style="font-size: 15px; color: #666; margin-bottom: 20px; font-weight: 500;">This Certificate Is Proudly Presented To</div>
+                            <div id="certNameDisplay" style="font-family: 'Playfair Display', serif; font-size: 44px; font-weight: 700; color: #333; margin-bottom: 8px; border-bottom: 3px solid #667eea; display: inline-block; padding: 0 30px 8px;">John Doe</div>
+                            <div style="font-size: 14px; color: #555; line-height: 1.7; margin: 25px auto; max-width: 700px;">
+                                This certifies that the above-named individual has successfully completed the 
+                                <strong>PhishGuard Cybersecurity Awareness Training Program</strong>, demonstrating 
+                                proficiency in identifying and preventing phishing attacks across email, SMS, and 
+                                social media platforms.
+                            </div>
+                            <div id="certScoreDisplay" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px 28px; border-radius: 25px; font-weight: 700; font-size: 17px; margin: 15px 0;">Score: 20/20 (100%)</div>
+                            
+                            <div style="margin-top: 25px; display: flex; justify-content: space-between; align-items: center; padding: 0 60px;">
+                                <div style="text-align: center; flex: 1;">
+                                    <div style="width: 200px; height: 2px; background: #333; margin: 0 auto 10px;"></div>
+                                    <div style="font-weight: 700; color: #333; font-size: 16px; margin-bottom: 8px;">O. N. Muminov</div>
+                                    <div style="font-size: 13px; color: #666; text-transform: uppercase; letter-spacing: 1px;">Principal Director</div>
+                                </div>
+                                <div style="text-align: center; flex: 1;">
+                                    <div id="certDateDisplay" style="font-weight: 700; color: #333; font-size: 16px; margin-bottom: 8px;">January 26, 2026</div>
+                                    <div style="font-size: 13px; color: #666; text-transform: uppercase; letter-spacing: 1px;">Date of Completion</div>
+                                </div>
+                                <div style="text-align: center; flex: 1;">
+                                    <div style="width: 200px; height: 2px; background: #333; margin: 0 auto 10px;"></div>
+                                    <div style="font-weight: 700; color: #333; font-size: 16px; margin-bottom: 8px;">PhishGuard Team</div>
+                                    <div style="font-size: 13px; color: #666; text-transform: uppercase; letter-spacing: 1px;">Certification Authority</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <a href="{{ url_for('home') }}" class="nav-btn">
+                    <span data-translate="btn-home">Return to Dashboard</span>
+                    <span>🏠</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                'module-badge': 'FINAL EXAM - ALL MODULES',
+                'module-title': 'PhishGuard Master Certification',
+                'module-subtitle': 'Comprehensive 20-question exam testing all phishing detection skills from Modules 1, 2, and 3',
+                'btn-submit': '🏆 Submit Final Exam',
+                'btn-home': 'Return to Dashboard',
+                'cert-title': 'Congratulations!',
+                'cert-text1': 'You have successfully completed',
+                'cert-module': 'PhishGuard Complete Certification Program',
+                'cert-text2': 'All 3 Modules: Introduction to Phishing, Telegram & SMS Phishing, and Advanced Detection',
+                'cert-text3': 'You are now equipped to identify and avoid phishing attacks. Stay vigilant!',
+                'cert-generate-title': '📜 Generate Your Official Certificate',
+                'cert-name-label': 'Your Name:',
+                'cert-generate-btn': '🎓 Generate & Download Certificate',
+                'alert-answer-all': 'Please answer all questions before submitting!',
+                'alert-need-70': 'You need 70% to pass. Please review the material and try again.',
+                'btn-view-cert': '🎓 View Certificate',
+                'btn-return-dashboard': '🏠 Return to Dashboard',
+                'score-result': 'Score: {correct}/{total} ({score}%)'
+            },
+            uz: {
+                'module-badge': 'YAKUNIY IMTIHON - BARCHA MODULLAR',
+                'module-title': 'PhishGuard Bosh Sertifikat',
+                'module-subtitle': '1, 2 va 3 modullardan barcha fishing aniqlash ko\'nikmalarini sinab chiquvchi 20 savollik imtihon',
+                'btn-submit': '🏆 Yakuniy imtihonni topshirish',
+                'btn-home': 'Bosh sahifaga qaytish',
+                'cert-title': 'Tabriklaymiz!',
+                'cert-text1': 'Siz muvaffaqiyatli tugatdingiz',
+                'cert-module': 'PhishGuard To\'liq Sertifikat Dasturi',
+                'cert-text2': 'Barcha 3 modul: Fishing kiritish, Telegram va SMS Fishing, va Ilg\'or Aniqlash',
+                'cert-text3': 'Siz hozir fishing hujumlarini aniqlash va uldan saqlanishga tayor. Hoshiyat bo\'ling!',
+                'cert-generate-title': '📜 Rasmiy Sertifikatingizni Yarating',
+                'cert-name-label': 'Sizning ism:',
+                'cert-generate-btn': '🎓 Yarating va Yuklab oling Sertifikat',
+                'alert-answer-all': 'Topshirishdan oldin barcha savolga javob bering!',
+                'alert-need-70': 'O\'tish uchun 70% kerak. Materiallarni qaytadan ko\'rib chiqing va qaytadan urinib ko\'ring.',
+                'btn-view-cert': '🎓 Sertifikatni Ko\'ring',
+                'btn-return-dashboard': '🏠 Bosh sahifaga qaytish',
+                'score-result': 'Natija: {correct}/{total} ({score}%)'
+            }
+        };
+
+        // Language seed: Flask session is authoritative
+        const currentLang = '{{ lang }}' || localStorage.getItem('phishguard_lang') || 'en';
+        localStorage.setItem('phishguard_lang', currentLang);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLanguage();
+        });
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.dataset.translate;
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    el.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        let selectedAnswers = {};
+        // Store exam result for certificate generation
+        let examScore = 0, examCorrect = 0, examTotal = 0;
+        
+        function selectAnswer(questionId, answer) {
+            selectedAnswers[questionId] = answer;
+
+            const questionDiv = document.getElementById('question-' + questionId);
+            if (questionDiv) {
+                questionDiv.querySelectorAll('.quiz-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                    if (opt.dataset.value === answer) {
+                        opt.classList.add('selected');
+                    }
+                });
+            }
+        }
+        
+        function submitExam() {
+            const totalQuestions = {{ questions|length }};
+            if (Object.keys(selectedAnswers).length < totalQuestions) {
+                alert(translations[currentLang]['alert-answer-all']);
+                return;
+            }
+            
+            fetch('/submit-exam', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ answers: selectedAnswers })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showResult(data.score, data.correct, data.total, data.passed);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error submitting exam. Please try again.');
+            });
+        }
+        
+        function showResult(score, correct, total, passed) {
+            examScore = score; examCorrect = correct; examTotal = total;
+
+            const resultDiv = document.getElementById('scoreDisplay');
+            const certificateDiv = document.getElementById('certificate');
+            
+            resultDiv.textContent = translations[currentLang]['score-result']
+                .replace('{correct}', correct)
+                .replace('{total}', total)
+                .replace('{score}', score);
+            resultDiv.style.display = 'block';
+            
+            if (passed) {
+                certificateDiv.classList.add('show');
+                certificateDiv.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert(translations[currentLang]['alert-need-70']);
+            }
+        }
+
+        // ── Certificate PDF generation (html2canvas + jsPDF, both already loaded) ──
+        async function generateCertificate() {
+            // Fill dynamic values into the hidden template
+            const nameInput = document.getElementById('certFullName').value.trim();
+            if (!nameInput) {
+                alert(currentLang === 'uz' ? 'Iltimos, isminizni kiriting!' : 'Please enter your name!');
+                return;
+            }
+            document.getElementById('certNameDisplay').textContent = nameInput;
+            document.getElementById('certScoreDisplay').textContent = `Score: ${examCorrect}/${examTotal} (${examScore}%)`;
+
+            // Date
+            const now = new Date();
+            const months = ['January','February','March','April','May','June',
+                            'July','August','September','October','November','December'];
+            document.getElementById('certDateDisplay').textContent =
+                months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear();
+
+            // Render the hidden template to canvas
+            const certCanvas = document.getElementById('certificateCanvas');
+            try {
+                const canvas = await html2canvas(certCanvas, {
+                    scale: 2,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff'
+                });
+
+                // Convert canvas → PDF via jsPDF
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({ orientation: 'landscape', unit: 'px', format: [canvas.width / 2, canvas.height / 2] });
+                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
+                pdf.save('PhishGuard_Certificate.pdf');
+
+                // Reveal post-download navigation buttons
+                const postBtns = document.getElementById('postDownloadBtns');
+                if (postBtns) {
+                    postBtns.style.display = 'flex';
+                    postBtns.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            } catch (err) {
+                console.error('Certificate generation error:', err);
+                alert('Could not generate PDF. Please try the Print option instead.');
+            }
+        }
+    </script>
+</body>
+</html>

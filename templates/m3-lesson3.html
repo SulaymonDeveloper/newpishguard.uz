@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3 - Lesson 3: Dangerous Links - PhishGuard.uz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --bg-gradient-start: #3b82f6;
+            --bg-gradient-end: #2563eb;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-white: #ffffff;
+            --bg-light: #f1f5f9;
+            --border-color: #e2e8f0;
+            --error-red: #dc2626;
+            --success-green: #16a34a;
+            --warning-yellow: #f59e0b;
+            --danger-red: #ff6666;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(37,99,235,0.12);
+            --shadow-lg: 0 20px 40px rgba(37,99,235,0.15);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Header */
+        .module-header {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--danger-red), #ff8888);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .module-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .module-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .progress-percentage {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .progress-bar {
+            background: var(--bg-light);
+            height: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--danger-red), #ff8888);
+            width: 0%;
+            transition: width 0.6s ease;
+            border-radius: 8px;
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+        }
+
+        .lesson-section {
+            margin-bottom: 40px;
+        }
+
+        .lesson-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--danger-red), #ff8888);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .section-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        .section-content strong {
+            color: var(--danger-red);
+        }
+
+        .section-content em {
+            color: var(--primary-blue);
+            font-style: normal;
+            font-weight: 600;
+        }
+
+        .section-content code {
+            background: var(--bg-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .domain-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .domain-list li {
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-size: 15px;
+            line-height: 1.6;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .domain-list li.fake {
+            background: #fee2e2;
+            border-left: 4px solid var(--error-red);
+        }
+
+        .domain-list li.real {
+            background: #dcfce7;
+            border-left: 4px solid var(--success-green);
+        }
+
+        .domain-list li::before {
+            flex-shrink: 0;
+            font-size: 18px;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .domain-list li.fake::before { content: '❌'; }
+        .domain-list li.real::before { content: '✅'; }
+
+        /* Demo Section */
+        .demo-section {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 40px;
+        }
+
+        .demo-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #991b1b;
+            margin-bottom: 16px;
+        }
+
+        .demo-instruction {
+            color: #7f1d1d;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .link-example {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .link-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .link-url {
+            font-size: 15px;
+            color: var(--primary-blue);
+            margin-bottom: 16px;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+        }
+
+        .link-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .link-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 20px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .link-btn.safe {
+            background: white;
+            border-color: var(--success-green);
+            color: var(--success-green);
+        }
+
+        .link-btn.safe:hover:not(.disabled) {
+            background: var(--success-green);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .link-btn.unsafe {
+            background: white;
+            border-color: var(--error-red);
+            color: var(--error-red);
+        }
+
+        .link-btn.unsafe:hover:not(.disabled) {
+            background: var(--error-red);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .link-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .feedback {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: var(--success-green);
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            color: var(--error-red);
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-btn-prev {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .nav-btn-prev:hover {
+            background: #e2e8f0;
+            transform: translateX(-4px);
+        }
+
+        .nav-btn-home {
+            background: var(--danger-red);
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 102, 102, 0.3);
+        }
+
+        .nav-btn-home:hover {
+            background: #ff3333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 102, 102, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 16px;
+            }
+
+            .module-header {
+                padding: 24px;
+            }
+
+            .module-title {
+                font-size: 24px;
+            }
+
+            .lesson-content {
+                padding: 24px;
+            }
+
+            .demo-section {
+                padding: 24px;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                max-width: 100%;
+            }
+
+            .link-buttons {
+                flex-direction: column;
+            }
+
+            .link-btn {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+            <a href="{{ url_for('home') }}" class="btn" style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-decoration: none; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span>Home</span>
+            </a>
+    <!-- Language Switch -->
+    <div class="lang-switch">
+        <button class="lang-btn active" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="uz">O'zbek</button>
+    </div>
+
+    <div class="page-container">
+        <!-- Module Header -->
+        <div class="module-header">
+            <div class="module-badge">
+                <span>🔗</span>
+                <span data-translate="module-badge">Module 3 - Lesson 3</span>
+            </div>
+            <h1 class="module-title" data-translate="module-title">Dangerous links and domains</h1>
+            <p class="module-subtitle" data-translate="module-subtitle">
+                Learn to identify malicious URLs, shortened links, and domain spoofing techniques
+            </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-label">
+                <span class="progress-text" data-translate="progress-text">Lesson progress</span>
+                <span class="progress-percentage" id="progressPercentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Understanding Phishing Links -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📖</span>
+                    <span data-translate="understanding-title">Understanding phishing links</span>
+                </h2>
+                <p class="section-content" data-translate="understanding-text1">
+                    Cybercriminals often use <strong>shortened links</strong> (like <em>bit.ly</em>) or <strong>redirecting domains</strong> (like <em>t.me</em>) to disguise malicious URLs. Some even use new or strange domain extensions such as <em>.zip</em> or <em>.top</em> to trick users.
+                </p>
+                <p class="section-content" data-translate="understanding-text2">
+                    On a <strong>desktop</strong>, hover your mouse over a link to preview its real destination. On <strong>mobile</strong>, long-press the link before opening it.
+                </p>
+            </div>
+
+            <!-- Domain Spoofing Examples -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">⚠️</span>
+                    <span data-translate="spoofing-title">Domain spoofing examples</span>
+                </h2>
+
+                <ul class="domain-list">
+                    <li class="fake">
+                        <span>telegram.com.help-gov.net</span>
+                        <span style="margin-left: auto; font-family: 'Manrope', sans-serif;" data-translate="fake-label">(Fake, attacker domain)</span>
+                    </li>
+                    <li class="real">
+                        <span>telegram.org</span>
+                        <span style="margin-left: auto; font-family: 'Manrope', sans-serif;" data-translate="real-label">(Real Telegram domain)</span>
+                    </li>
+                    <li class="fake">
+                        <span>teleqram.org</span>
+                        <span style="margin-left: auto; font-family: 'Manrope', sans-serif;" data-translate="fake-substitution">(Fake, letter substitution)</span>
+                    </li>
+                    <li class="fake">
+                        <span>telegram-support.co</span>
+                        <span style="margin-left: auto; font-family: 'Manrope', sans-serif;" data-translate="fake-imitation">(Fake imitation domain)</span>
+                    </li>
+                </ul>
+
+                <p class="section-content" data-translate="spoofing-explanation">
+                    Always double-check the <strong>main domain</strong> (the part before .com or .org) — this reveals the real owner of the website.
+                </p>
+            </div>
+
+            <!-- Demo Section -->
+            <div class="demo-section">
+                <div class="demo-title">
+                    <span>🔗</span>
+                    <span data-translate="demo-title">Demo: choose safe vs unsafe links</span>
+                </div>
+                <p class="demo-instruction" data-translate="demo-instruction">
+                    Review each example and decide if it's safe or a phishing attempt.
+                </p>
+
+                <!-- Link 1 -->
+                <div class="link-example" id="link1">
+                    <p class="link-label" data-translate="link1-label">Link 1:</p>
+                    <div class="link-url">https://telegram.org/login</div>
+                    <div class="link-buttons">
+                        <button class="link-btn safe" onclick="checkLink(1, true)" data-translate="btn-safe">
+                            Safe
+                        </button>
+                        <button class="link-btn unsafe" onclick="checkLink(1, false)" data-translate="btn-unsafe">
+                            Unsafe
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback1"></div>
+                </div>
+
+                <!-- Link 2 -->
+                <div class="link-example" id="link2">
+                    <p class="link-label" data-translate="link2-label">Link 2:</p>
+                    <div class="link-url">https://telegram.com.help-login.net</div>
+                    <div class="link-buttons">
+                        <button class="link-btn safe" onclick="checkLink(2, false)" data-translate="btn-safe">
+                            Safe
+                        </button>
+                        <button class="link-btn unsafe" onclick="checkLink(2, true)" data-translate="btn-unsafe">
+                            Unsafe
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback2"></div>
+                </div>
+
+                <!-- Link 3 -->
+                <div class="link-example" id="link3">
+                    <p class="link-label" data-translate="link3-label">Link 3:</p>
+                    <div class="link-url">https://t.me/update-verify</div>
+                    <div class="link-buttons">
+                        <button class="link-btn safe" onclick="checkLink(3, false)" data-translate="btn-safe">
+                            Safe
+                        </button>
+                        <button class="link-btn unsafe" onclick="checkLink(3, true)" data-translate="btn-unsafe">
+                            Unsafe
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback3"></div>
+                </div>
+
+                <!-- Link 4 -->
+                <div class="link-example" id="link4">
+                    <p class="link-label" data-translate="link4-label">Link 4:</p>
+                    <div class="link-url">https://bit.ly/free-premium-telegram</div>
+                    <div class="link-buttons">
+                        <button class="link-btn safe" onclick="checkLink(4, false)" data-translate="btn-safe">
+                            Safe
+                        </button>
+                        <button class="link-btn unsafe" onclick="checkLink(4, true)" data-translate="btn-unsafe">
+                            Unsafe
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback4"></div>
+                </div>
+
+                <!-- Link 5 -->
+                <div class="link-example" id="link5">
+                    <p class="link-label" data-translate="link5-label">Link 5:</p>
+                    <div class="link-url">https://telegram.org/security</div>
+                    <div class="link-buttons">
+                        <button class="link-btn safe" onclick="checkLink(5, true)" data-translate="btn-safe">
+                            Safe
+                        </button>
+                        <button class="link-btn unsafe" onclick="checkLink(5, false)" data-translate="btn-unsafe">
+                            Unsafe
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback5"></div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <a href="{{ url_for('lesson', module=3, lesson=2) }}" class="nav-btn nav-btn-prev">
+                    <span>⬅️</span>
+                    <span data-translate="btn-prev">Previous lesson</span>
+                </a>
+                <a href="{{ url_for('lesson', module=3, lesson=4) }}" class="nav-btn nav-btn-home">
+                    <span data-translate="btn-next">Next lesson</span>
+                    <span>➡️</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translations
+        const translations = {
+            en: {
+                'module-badge': 'Module 3 - Lesson 3',
+                'module-title': 'Dangerous links and domains',
+                'module-subtitle': 'Learn to identify malicious URLs, shortened links, and domain spoofing techniques',
+                'progress-text': 'Lesson progress',
+                'understanding-title': 'Understanding phishing links',
+                'understanding-text1': 'Cybercriminals often use shortened links (like bit.ly) or redirecting domains (like t.me) to disguise malicious URLs. Some even use new or strange domain extensions such as .zip or .top to trick users.',
+                'understanding-text2': 'On a desktop, hover your mouse over a link to preview its real destination. On mobile, long-press the link before opening it.',
+                'spoofing-title': 'Domain spoofing examples',
+                'fake-label': '(Fake, attacker domain)',
+                'real-label': '(Real Telegram domain)',
+                'fake-substitution': '(Fake, letter substitution)',
+                'fake-imitation': '(Fake imitation domain)',
+                'spoofing-explanation': 'Always double-check the main domain (the part before .com or .org) — this reveals the real owner of the website.',
+                'demo-title': 'Demo: choose safe vs unsafe links',
+                'demo-instruction': 'Review each example and decide if it\'s safe or a phishing attempt.',
+                'link1-label': 'Link 1:',
+                'link2-label': 'Link 2:',
+                'link3-label': 'Link 3:',
+                'link4-label': 'Link 4:',
+                'link5-label': 'Link 5:',
+                'btn-safe': 'Safe',
+                'btn-unsafe': 'Unsafe',
+                'btn-prev': 'Previous lesson',
+                'btn-next': 'Next lesson',
+                'feedback-correct': '✅ Correct! You identified the link correctly.',
+                'feedback-incorrect': '⚠️ Incorrect. Always check the domain carefully before clicking links.'
+            },
+            uz: {
+                'module-badge': '3-modul - 3-dars',
+                'module-title': 'Xavfli havolalar va domenlar',
+                'module-subtitle': 'Zararli URL manzillarni, qisqartirilgan havolalarni va domen soxtalashtirishni aniqlashni o\'rganing',
+                'progress-text': 'Dars jarayoni',
+                'understanding-title': 'Fishing havolalarini tushunish',
+                'understanding-text1': 'Kiberjinoyatchilar ko\'pincha zararli URL manzillarni yashirish uchun qisqartirilgan havolalar (masalan, bit.ly) yoki yo\'naltiruvchi domenlardan (masalan, t.me) foydalanadilar. Ba\'zilari foydalanuvchilarni aldash uchun .zip yoki .top kabi yangi yoki g\'alati domen kengaytmalaridan foydalanadilar.',
+                'understanding-text2': 'Kompyuterda sichqonchani havola ustiga olib boring va haqiqiy manzilni ko\'ring. Mobil qurilmada havolani ochishdan oldin uzoq bosing.',
+                'spoofing-title': 'Domen soxtalashtirishga misollar',
+                'fake-label': '(Soxta, hujumchi domeni)',
+                'real-label': '(Haqiqiy Telegram domeni)',
+                'fake-substitution': '(Soxta, harf almashtirish)',
+                'fake-imitation': '(Soxta taqlid domeni)',
+                'spoofing-explanation': 'Har doim asosiy domenni (.com yoki .org dan oldingi qismni) ikki marta tekshiring — bu veb-saytning haqiqiy egasini ko\'rsatadi.',
+                'demo-title': 'Demo: xavfsiz va xavfli havolalarni tanlang',
+                'demo-instruction': 'Har bir misolni ko\'rib chiqing va u xavfsiz yoki fishing urinishi ekanligini aniqlang.',
+                'link1-label': '1-havola:',
+                'link2-label': '2-havola:',
+                'link3-label': '3-havola:',
+                'link4-label': '4-havola:',
+                'link5-label': '5-havola:',
+                'btn-safe': 'Xavfsiz',
+                'btn-unsafe': 'Xavfli',
+                'btn-prev': 'Oldingi dars',
+                'btn-next': 'Keyingi dars',
+                'feedback-correct': '✅ To\'g\'ri! Siz havolani to\'g\'ri aniqladingiz.',
+                'feedback-incorrect': '⚠️ Noto\'g\'ri. Havolalarni bosishdan oldin har doim domenni diqqat bilan tekshiring.'
+            }
+        };
+
+        let currentLang = localStorage.getItem('language') || 'en';
+        const answeredLinks = new Set();
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.lang === currentLang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            updateLanguage();
+            
+            initLanguage();
+            updateProgress(100);
+        });
+
+        function initLanguage() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === currentLang);
+            });
+            updateLanguage();
+        }
+
+        // Language switching
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentLang = btn.dataset.lang;
+                localStorage.setItem('language', currentLang);
+                updateLanguage();
+            });
+        });
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.dataset.translate;
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        function updateProgress(percentage) {
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+            document.getElementById('progressPercentage').textContent = `${percentage}%`;
+        }
+
+        function checkLink(linkNum, isCorrect) {
+            if (answeredLinks.has(linkNum)) return;
+
+            answeredLinks.add(linkNum);
+            const linkBox = document.getElementById('link' + linkNum);
+            const buttons = linkBox.querySelectorAll('.link-btn');
+            const feedback = document.getElementById('feedback' + linkNum);
+
+            // Disable buttons
+            buttons.forEach(btn => btn.classList.add('disabled'));
+
+            // Show feedback
+            if (isCorrect) {
+                feedback.textContent = translations[currentLang]['feedback-correct'];
+                feedback.className = 'feedback show correct';
+            } else {
+                feedback.textContent = translations[currentLang]['feedback-incorrect'];
+                feedback.className = 'feedback show incorrect';
+            }
+        }
+    </script>
+</body>
+</html>

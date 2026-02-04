@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 3 - Lesson 2: Emotional Manipulation - PhishGuard.uz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --bg-gradient-start: #3b82f6;
+            --bg-gradient-end: #2563eb;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-white: #ffffff;
+            --bg-light: #f1f5f9;
+            --border-color: #e2e8f0;
+            --error-red: #dc2626;
+            --success-green: #16a34a;
+            --warning-yellow: #f59e0b;
+            --purple: #7c3aed;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(37,99,235,0.12);
+            --shadow-lg: 0 20px 40px rgba(37,99,235,0.15);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Header */
+        .module-header {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--warning-yellow), #fbbf24);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .module-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .module-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .progress-percentage {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .progress-bar {
+            background: var(--bg-light);
+            height: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--warning-yellow), #fbbf24);
+            width: 0%;
+            transition: width 0.6s ease;
+            border-radius: 8px;
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+        }
+
+        .lesson-section {
+            margin-bottom: 40px;
+        }
+
+        .lesson-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--warning-yellow), #fbbf24);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .section-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        .tricks-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .tricks-list li {
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-left: 4px solid var(--warning-yellow);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .tricks-list li::before {
+            flex-shrink: 0;
+            font-size: 20px;
+        }
+
+        .tricks-list li:nth-child(1)::before { content: '⏰'; }
+        .tricks-list li:nth-child(2)::before { content: '💰'; }
+        .tricks-list li:nth-child(3)::before { content: '😨'; }
+
+        .tricks-list li strong {
+            color: #92400e;
+        }
+
+        /* Exercise Section */
+        .exercise-section {
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 40px;
+        }
+
+        .exercise-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #0c4a6e;
+            margin-bottom: 16px;
+        }
+
+        .exercise-instruction {
+            color: #075985;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .message-example {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .message-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .message-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .emotion-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .emotion-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px 16px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .emotion-btn.urgency {
+            background: white;
+            border-color: var(--error-red);
+            color: var(--error-red);
+        }
+
+        .emotion-btn.urgency:hover:not(.disabled) {
+            background: var(--error-red);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .emotion-btn.greed {
+            background: white;
+            border-color: var(--success-green);
+            color: var(--success-green);
+        }
+
+        .emotion-btn.greed:hover:not(.disabled) {
+            background: var(--success-green);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .emotion-btn.fear {
+            background: white;
+            border-color: var(--warning-yellow);
+            color: #92400e;
+        }
+
+        .emotion-btn.fear:hover:not(.disabled) {
+            background: var(--warning-yellow);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .emotion-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .feedback {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: var(--success-green);
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            color: var(--error-red);
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-btn-prev {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .nav-btn-prev:hover {
+            background: #e2e8f0;
+            transform: translateX(-4px);
+        }
+
+        .nav-btn-next {
+            background: var(--warning-yellow);
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .nav-btn-next:hover {
+            background: #d97706;
+            transform: translateX(4px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 16px;
+            }
+
+            .module-header {
+                padding: 24px;
+            }
+
+            .module-title {
+                font-size: 24px;
+            }
+
+            .lesson-content {
+                padding: 24px;
+            }
+
+            .exercise-section {
+                padding: 24px;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                max-width: 100%;
+            }
+
+            .emotion-buttons {
+                flex-direction: column;
+            }
+
+            .emotion-btn {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+            <a href="{{ url_for('home') }}" class="btn" style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-decoration: none; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span>Home</span>
+            </a>
+    <!-- Language Switch -->
+    <div class="lang-switch">
+        <button class="lang-btn active" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="uz">O'zbek</button>
+    </div>
+
+    <div class="page-container">
+        <!-- Module Header -->
+        <div class="module-header">
+            <div class="module-badge">
+                <span>🧠</span>
+                <span data-translate="module-badge">Module 3 - Lesson 2</span>
+            </div>
+            <h1 class="module-title" data-translate="module-title">Emotional manipulation techniques</h1>
+            <p class="module-subtitle" data-translate="module-subtitle">
+                Learn how cybercriminals exploit emotions to make users act without thinking
+            </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-label">
+                <span class="progress-text" data-translate="progress-text">Lesson progress</span>
+                <span class="progress-percentage" id="progressPercentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Common Psychological Tricks -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📖</span>
+                    <span data-translate="tricks-title">Common psychological tricks</span>
+                </h2>
+
+                <ul class="tricks-list">
+                    <li>
+                        <span><strong data-translate="urgency-label">Urgency:</strong> <span data-translate="urgency-example">"Act now or your account will be banned!"</span></span>
+                    </li>
+                    <li>
+                        <span><strong data-translate="greed-label">Greed:</strong> <span data-translate="greed-example">"You've won a prize!"</span></span>
+                    </li>
+                    <li>
+                        <span><strong data-translate="fear-label">Fear:</strong> <span data-translate="fear-example">"Your account is compromised!"</span></span>
+                    </li>
+                </ul>
+
+                <p class="section-content" data-translate="tricks-explanation">
+                    Cybercriminals often exploit emotions to make users act without thinking. Recognizing these patterns can prevent you from falling for phishing scams.
+                </p>
+            </div>
+
+            <!-- Exercise Section -->
+            <div class="exercise-section">
+                <div class="exercise-title">
+                    <span>🧠</span>
+                    <span data-translate="exercise-title">Exercise: match the message to the emotion</span>
+                </div>
+                <p class="exercise-instruction" data-translate="exercise-instruction">
+                    Choose which emotion the message is trying to trigger.
+                </p>
+
+                <!-- Message 1 -->
+                <div class="message-example" id="msg1">
+                    <p class="message-label" data-translate="msg1-label">Message 1:</p>
+                    <p class="message-text" data-translate="msg1-text">
+                        "Your account will be deleted in 2 hours unless you verify it now!"
+                    </p>
+                    <div class="emotion-buttons">
+                        <button class="emotion-btn urgency" onclick="checkEmotion(1, 'urgency')" data-translate="btn-urgency">
+                            Urgency
+                        </button>
+                        <button class="emotion-btn greed" onclick="checkEmotion(1, 'greed')" data-translate="btn-greed">
+                            Greed
+                        </button>
+                        <button class="emotion-btn fear" onclick="checkEmotion(1, 'fear')" data-translate="btn-fear">
+                            Fear
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback1"></div>
+                </div>
+
+                <!-- Message 2 -->
+                <div class="message-example" id="msg2">
+                    <p class="message-label" data-translate="msg2-label">Message 2:</p>
+                    <p class="message-text" data-translate="msg2-text">
+                        "Congratulations! You've won a new smartphone! Click to claim your reward!"
+                    </p>
+                    <div class="emotion-buttons">
+                        <button class="emotion-btn urgency" onclick="checkEmotion(2, 'urgency')" data-translate="btn-urgency">
+                            Urgency
+                        </button>
+                        <button class="emotion-btn greed" onclick="checkEmotion(2, 'greed')" data-translate="btn-greed">
+                            Greed
+                        </button>
+                        <button class="emotion-btn fear" onclick="checkEmotion(2, 'fear')" data-translate="btn-fear">
+                            Fear
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback2"></div>
+                </div>
+
+                <!-- Message 3 -->
+                <div class="message-example" id="msg3">
+                    <p class="message-label" data-translate="msg3-label">Message 3:</p>
+                    <p class="message-text" data-translate="msg3-text">
+                        "Suspicious activity detected on your account. Log in now to secure it."
+                    </p>
+                    <div class="emotion-buttons">
+                        <button class="emotion-btn urgency" onclick="checkEmotion(3, 'urgency')" data-translate="btn-urgency">
+                            Urgency
+                        </button>
+                        <button class="emotion-btn greed" onclick="checkEmotion(3, 'greed')" data-translate="btn-greed">
+                            Greed
+                        </button>
+                        <button class="emotion-btn fear" onclick="checkEmotion(3, 'fear')" data-translate="btn-fear">
+                            Fear
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback3"></div>
+                </div>
+
+                <!-- Message 4 -->
+                <div class="message-example" id="msg4">
+                    <p class="message-label" data-translate="msg4-label">Message 4:</p>
+                    <p class="message-text" data-translate="msg4-text">
+                        "Exclusive offer! Limited time only — get free Telegram Premium!"
+                    </p>
+                    <div class="emotion-buttons">
+                        <button class="emotion-btn urgency" onclick="checkEmotion(4, 'urgency')" data-translate="btn-urgency">
+                            Urgency
+                        </button>
+                        <button class="emotion-btn greed" onclick="checkEmotion(4, 'greed')" data-translate="btn-greed">
+                            Greed
+                        </button>
+                        <button class="emotion-btn fear" onclick="checkEmotion(4, 'fear')" data-translate="btn-fear">
+                            Fear
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback4"></div>
+                </div>
+
+                <!-- Message 5 -->
+                <div class="message-example" id="msg5">
+                    <p class="message-label" data-translate="msg5-label">Message 5:</p>
+                    <p class="message-text" data-translate="msg5-text">
+                        "We've detected a login attempt from an unknown device. Verify your identity immediately."
+                    </p>
+                    <div class="emotion-buttons">
+                        <button class="emotion-btn urgency" onclick="checkEmotion(5, 'urgency')" data-translate="btn-urgency">
+                            Urgency
+                        </button>
+                        <button class="emotion-btn greed" onclick="checkEmotion(5, 'greed')" data-translate="btn-greed">
+                            Greed
+                        </button>
+                        <button class="emotion-btn fear" onclick="checkEmotion(5, 'fear')" data-translate="btn-fear">
+                            Fear
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback5"></div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <a href="{{ url_for('lesson', module=3, lesson=1) }}" class="nav-btn nav-btn-prev">
+                    <span>⬅️</span>
+                    <span data-translate="btn-prev">Previous lesson</span>
+                </a>
+                <a href="{{ url_for('lesson', module=3, lesson=3) }}" class="nav-btn nav-btn-next">
+                    <span data-translate="btn-next">Next lesson</span>
+                    <span>➡️</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translations
+        const translations = {
+            en: {
+                'module-badge': 'Module 3 - Lesson 2',
+                'module-title': 'Emotional manipulation techniques',
+                'module-subtitle': 'Learn how cybercriminals exploit emotions to make users act without thinking',
+                'progress-text': 'Lesson progress',
+                'tricks-title': 'Common psychological tricks',
+                'urgency-label': 'Urgency:',
+                'urgency-example': '"Act now or your account will be banned!"',
+                'greed-label': 'Greed:',
+                'greed-example': '"You\'ve won a prize!"',
+                'fear-label': 'Fear:',
+                'fear-example': '"Your account is compromised!"',
+                'tricks-explanation': 'Cybercriminals often exploit emotions to make users act without thinking. Recognizing these patterns can prevent you from falling for phishing scams.',
+                'exercise-title': 'Exercise: match the message to the emotion',
+                'exercise-instruction': 'Choose which emotion the message is trying to trigger.',
+                'msg1-label': 'Message 1:',
+                'msg1-text': '"Your account will be deleted in 2 hours unless you verify it now!"',
+                'msg2-label': 'Message 2:',
+                'msg2-text': '"Congratulations! You\'ve won a new smartphone! Click to claim your reward!"',
+                'msg3-label': 'Message 3:',
+                'msg3-text': '"Suspicious activity detected on your account. Log in now to secure it."',
+                'msg4-label': 'Message 4:',
+                'msg4-text': '"Exclusive offer! Limited time only — get free Telegram Premium!"',
+                'msg5-label': 'Message 5:',
+                'msg5-text': '"We\'ve detected a login attempt from an unknown device. Verify your identity immediately."',
+                'btn-urgency': 'Urgency',
+                'btn-greed': 'Greed',
+                'btn-fear': 'Fear',
+                'btn-prev': 'Previous lesson',
+                'btn-next': 'Next lesson',
+                'feedback-correct': '✅ Correct! This message uses {emotion} to manipulate emotions.',
+                'feedback-incorrect': '⚠️ Try again! Look for urgency, greed, or fear triggers.'
+            },
+            uz: {
+                'module-badge': '3-modul - 2-dars',
+                'module-title': 'Hissiy manipulyatsiya usullari',
+                'module-subtitle': 'Kiberjinoyatchilar foydalanuvchilarni o\'ylamasdan harakat qilishga majbur qilish uchun hissiyotlardan qanday foydalanishlarini bilib oling',
+                'progress-text': 'Dars jarayoni',
+                'tricks-title': 'Umumiy psixologik hiyla-nayranglar',
+                'urgency-label': 'Shoshilinchlik:',
+                'urgency-example': '"Hozir harakat qiling, aks holda hisobingiz bloklanadi!"',
+                'greed-label': 'Ochko\'zlik:',
+                'greed-example': '"Siz sovrin yutib oldingiz!"',
+                'fear-label': 'Qo\'rquv:',
+                'fear-example': '"Hisobingiz xavf ostida!"',
+                'tricks-explanation': 'Kiberjinoyatchilar ko\'pincha foydalanuvchilarni o\'ylamasdan harakat qilishga majbur qilish uchun hissiyotlardan foydalanadilar. Ushbu naqshlarni tanib olish fishing firibgarliklariga tushib qolmaslikka yordam beradi.',
+                'exercise-title': 'Mashq: xabarni hissiyot bilan moslang',
+                'exercise-instruction': 'Xabar qaysi hissiyotni qo\'zg\'atmoqchi ekanligini tanlang.',
+                'msg1-label': '1-xabar:',
+                'msg1-text': '"Agar hozir tasdiqlamasangiz, hisobingiz 2 soatda o\'chiriladi!"',
+                'msg2-label': '2-xabar:',
+                'msg2-text': '"Tabriklaymiz! Siz yangi smartfon yutib oldingiz! Mukofotingizni olish uchun bosing!"',
+                'msg3-label': '3-xabar:',
+                'msg3-text': '"Hisobingizda shubhali faollik aniqlandi. Uni himoya qilish uchun hozir tizimga kiring."',
+                'msg4-label': '4-xabar:',
+                'msg4-text': '"Eksklyuziv taklif! Cheklangan vaqt - bepul Telegram Premium oling!"',
+                'msg5-label': '5-xabar:',
+                'msg5-text': '"Noma\'lum qurilmadan kirish urinishini aniqladik. Shaxsingizni darhol tasdiqlang."',
+                'btn-urgency': 'Shoshilinchlik',
+                'btn-greed': 'Ochko\'zlik',
+                'btn-fear': 'Qo\'rquv',
+                'btn-prev': 'Oldingi dars',
+                'btn-next': 'Keyingi dars',
+                'feedback-correct': '✅ To\'g\'ri! Bu xabar hissiyotlarni manipulyatsiya qilish uchun {emotion}dan foydalanadi.',
+                'feedback-incorrect': '⚠️ Qaytadan urinib ko\'ring! Shoshilinchlik, ochko\'zlik yoki qo\'rquv qo\'zg\'atuvchilarni qidiring.'
+            }
+        };
+
+        let currentLang = localStorage.getItem('language') || 'en';
+        const answeredMessages = new Set();
+        
+        // Correct answers for each message
+        const correctEmotions = {
+            1: 'urgency',
+            2: 'greed',
+            3: 'fear',
+            4: 'greed',
+            5: 'fear'
+        };
+
+        const emotionNames = {
+            en: { urgency: 'urgency', greed: 'greed', fear: 'fear' },
+            uz: { urgency: 'shoshilinchlik', greed: 'ochko\'zlik', fear: 'qo\'rquv' }
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.lang === currentLang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            updateLanguage();
+            
+            initLanguage();
+            updateProgress(100);
+        });
+
+        function initLanguage() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === currentLang);
+            });
+            updateLanguage();
+        }
+
+        // Language switching
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentLang = btn.dataset.lang;
+                localStorage.setItem('language', currentLang);
+                updateLanguage();
+            });
+        });
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.dataset.translate;
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        function updateProgress(percentage) {
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+            document.getElementById('progressPercentage').textContent = `${percentage}%`;
+        }
+
+        function checkEmotion(msgNum, selected) {
+            if (answeredMessages.has(msgNum)) return;
+
+            answeredMessages.add(msgNum);
+            const messageBox = document.getElementById('msg' + msgNum);
+            const buttons = messageBox.querySelectorAll('.emotion-btn');
+            const feedback = document.getElementById('feedback' + msgNum);
+
+            // Disable buttons
+            buttons.forEach(btn => btn.classList.add('disabled'));
+
+            const isCorrect = (correctEmotions[msgNum] === selected);
+
+            // Show feedback
+            if (isCorrect) {
+                const emotionName = emotionNames[currentLang][selected];
+                feedback.textContent = translations[currentLang]['feedback-correct'].replace('{emotion}', emotionName);
+                feedback.className = 'feedback show correct';
+            } else {
+                feedback.textContent = translations[currentLang]['feedback-incorrect'];
+                feedback.className = 'feedback show incorrect';
+            }
+        }
+    </script>
+</body>
+</html>

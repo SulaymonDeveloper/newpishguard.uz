@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2 - Lesson 4: APK Malware Phishing - PhishGuard.uz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --bg-gradient-start: #3b82f6;
+            --bg-gradient-end: #2563eb;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-white: #ffffff;
+            --bg-light: #f1f5f9;
+            --border-color: #e2e8f0;
+            --error-red: #dc2626;
+            --success-green: #16a34a;
+            --warning-yellow: #f59e0b;
+            --danger-red: #ff6666;
+            --danger-red-dark: #ff3333;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(37,99,235,0.12);
+            --shadow-lg: 0 20px 40px rgba(37,99,235,0.15);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Header */
+        .module-header {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--danger-red), #ff8888);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .module-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .module-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .progress-percentage {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .progress-bar {
+            background: var(--bg-light);
+            height: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--danger-red), #ff8888);
+            width: 0%;
+            transition: width 0.6s ease;
+            border-radius: 8px;
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+        }
+
+        .lesson-section {
+            margin-bottom: 40px;
+        }
+
+        .lesson-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--danger-red), #ff8888);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .section-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        .section-content strong {
+            color: var(--danger-red);
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .info-list li {
+            padding: 12px 16px;
+            background: #fef2f2;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-size: 15px;
+            line-height: 1.6;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .info-list li::before {
+            content: '⚠️';
+            flex-shrink: 0;
+        }
+
+        .info-list li strong {
+            color: var(--danger-red);
+        }
+
+        /* Simulation Section */
+        .simulation-section {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 40px;
+        }
+
+        .simulation-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #991b1b;
+            margin-bottom: 16px;
+        }
+
+        .simulation-instruction {
+            color: #7f1d1d;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .message-example {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .message-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--danger-red), #ff8888);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .message-from {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .message-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .fake-link {
+            color: var(--danger-red);
+            text-decoration: underline;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .simulation-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .sim-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 20px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sim-btn.safe {
+            background: white;
+            border-color: var(--success-green);
+            color: var(--success-green);
+        }
+
+        .sim-btn.safe:hover:not(.disabled) {
+            background: var(--success-green);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .sim-btn.danger {
+            background: white;
+            border-color: var(--error-red);
+            color: var(--error-red);
+        }
+
+        .sim-btn.danger:hover:not(.disabled) {
+            background: var(--error-red);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .sim-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .feedback {
+            margin-top: 16px;
+            padding: 16px 20px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            display: none;
+            line-height: 1.6;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: var(--success-green);
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            color: var(--error-red);
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-btn-prev {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .nav-btn-prev:hover {
+            background: #e2e8f0;
+            transform: translateX(-4px);
+        }
+
+        .nav-btn-next {
+            background: var(--danger-red);
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 102, 102, 0.3);
+        }
+
+        .nav-btn-next:hover {
+            background: var(--danger-red-dark);
+            transform: translateX(4px);
+            box-shadow: 0 6px 20px rgba(255, 102, 102, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 16px;
+            }
+
+            .module-header {
+                padding: 24px;
+            }
+
+            .module-title {
+                font-size: 24px;
+            }
+
+            .lesson-content {
+                padding: 24px;
+            }
+
+            .simulation-section {
+                padding: 24px;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                max-width: 100%;
+            }
+
+            .simulation-buttons {
+                flex-direction: column;
+            }
+
+            .sim-btn {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+            <a href="{{ url_for('home') }}" class="btn" style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-decoration: none; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span>Home</span>
+            </a>
+    <!-- Language Switch -->
+    <div class="lang-switch">
+        <button class="lang-btn active" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="uz">O'zbek</button>
+    </div>
+
+    <div class="page-container">
+        <!-- Module Header -->
+        <div class="module-header">
+            <div class="module-badge">
+                <span>🔥</span>
+                <span data-translate="module-badge">Module 2 - Lesson 4</span>
+            </div>
+            <h1 class="module-title" data-translate="module-title">"Is this you in the video?" — APK malware phishing attack</h1>
+            <p class="module-subtitle" data-translate="module-subtitle">
+                Learn about dangerous APK malware attacks that spread through hacked Telegram accounts
+            </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-label">
+                <span class="progress-text" data-translate="progress-text">Lesson progress</span>
+                <span class="progress-percentage" id="progressPercentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Overview -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📖</span>
+                    <span data-translate="overview-title">Overview</span>
+                </h2>
+                <p class="section-content" data-translate="overview-text">
+                    This type of phishing attack spreads through hacked Telegram accounts. Victims receive a message like <strong>"Is this you in the video?"</strong> with a link to an APK file. Once the victim downloads and opens the file, a <strong>malicious app</strong> is installed that gives attackers full control over the Telegram account.
+                </p>
+            </div>
+
+            <!-- Attack Vector -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">⚠️</span>
+                    <span data-translate="attack-title">Attack vector</span>
+                </h2>
+                <ul class="info-list">
+                    <li data-translate="attack-item1">
+                        A hacked Telegram account sends messages to contacts with fake video links.
+                    </li>
+                    <li>
+                        <span data-translate="attack-item2">The link points to an <strong>APK (Android app)</strong> hosted outside the Play Store.</span>
+                    </li>
+                    <li data-translate="attack-item3">
+                        Once installed, the app steals Telegram session data and login credentials.
+                    </li>
+                    <li data-translate="attack-item4">
+                        The attacker gains full control of the victim's Telegram account.
+                    </li>
+                    <li data-translate="attack-item5">
+                        The malware continues spreading automatically to more contacts.
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Simulation Section -->
+            <div class="simulation-section">
+                <div class="simulation-title">
+                    <span>🧪</span>
+                    <span data-translate="simulation-title">Simulation exercise</span>
+                </div>
+                <p class="simulation-instruction" data-translate="simulation-instruction">
+                    Read the message and decide how to respond. Your decision determines the outcome.
+                </p>
+
+                <div class="message-example">
+                    <div class="message-header">
+                        <div class="message-icon">👤</div>
+                        <div class="message-from" data-translate="message-from">Your friend</div>
+                    </div>
+                    <div class="message-text">
+                        <span data-translate="message-text">Hey, is this you in the video? 😂 </span>
+                        <span class="fake-link">telegram-video.apk</span>
+                    </div>
+                    <div class="simulation-buttons">
+                        <button class="sim-btn safe" onclick="handleSimulation(true)" data-translate="btn-safe">
+                            Ignore the message and warn your friend
+                        </button>
+                        <button class="sim-btn danger" onclick="handleSimulation(false)" data-translate="btn-danger">
+                            Download and open the APK file
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback"></div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <a href="{{ url_for('lesson', module=2, lesson=3) }}" class="nav-btn nav-btn-prev">
+                    <span>⬅️</span>
+                    <span data-translate="btn-prev">Previous lesson</span>
+                </a>
+                <a href="{{ url_for('lesson', module=2, lesson=5) }}" class="nav-btn nav-btn-next">
+                    <span data-translate="btn-next">Next lesson</span>
+                    <span>➡️</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translations
+        const translations = {
+            en: {
+                'module-badge': 'Module 2 - Lesson 4',
+                'module-title': '"Is this you in the video?" — APK malware phishing attack',
+                'module-subtitle': 'Learn about dangerous APK malware attacks that spread through hacked Telegram accounts',
+                'progress-text': 'Lesson progress',
+                'overview-title': 'Overview',
+                'overview-text': 'This type of phishing attack spreads through hacked Telegram accounts. Victims receive a message like "Is this you in the video?" with a link to an APK file. Once the victim downloads and opens the file, a malicious app is installed that gives attackers full control over the Telegram account.',
+                'attack-title': 'Attack vector',
+                'attack-item1': 'A hacked Telegram account sends messages to contacts with fake video links.',
+                'attack-item2': 'The link points to an APK (Android app) hosted outside the Play Store.',
+                'attack-item3': 'Once installed, the app steals Telegram session data and login credentials.',
+                'attack-item4': 'The attacker gains full control of the victim\'s Telegram account.',
+                'attack-item5': 'The malware continues spreading automatically to more contacts.',
+                'simulation-title': 'Simulation exercise',
+                'simulation-instruction': 'Read the message and decide how to respond. Your decision determines the outcome.',
+                'message-from': 'Your friend',
+                'message-text': 'Hey, is this you in the video? 😂 ',
+                'btn-safe': 'Ignore the message and warn your friend',
+                'btn-danger': 'Download and open the APK file',
+                'btn-prev': 'Previous lesson',
+                'btn-next': 'Next lesson',
+                'feedback-safe': '✅ Safe choice! You avoided downloading the malware and helped stop its spread.',
+                'feedback-danger': '⚠️ Infected! The malicious APK installed a fake app, stole your Telegram data, and began sending phishing messages to your contacts.'
+            },
+            uz: {
+                'module-badge': '2-modul - 4-dars',
+                'module-title': '"Bu videoda sizmisiz?" — APK zararli dastur fishing hujumi',
+                'module-subtitle': 'Buzilgan Telegram hisoblar orqali tarqaladigan xavfli APK zararli dastur hujumlari haqida bilib oling',
+                'progress-text': 'Dars jarayoni',
+                'overview-title': 'Umumiy ko\'rinish',
+                'overview-text': 'Ushbu fishing hujumi turi buzilgan Telegram hisoblar orqali tarqaladi. Qurbonlar APK faylga havola bilan "Bu videoda sizmisiz?" kabi xabar oladilar. Qurbon faylni yuklab olib ochgach, hujumchilarga Telegram hisobi ustidan to\'liq nazorat beradigan zararli dastur o\'rnatiladi.',
+                'attack-title': 'Hujum vektori',
+                'attack-item1': 'Buzilgan Telegram hisobi kontaktlarga soxta video havolalari yuboradi.',
+                'attack-item2': 'Havola Play Store dan tashqarida joylashgan APK (Android ilovasi) ga ishora qiladi.',
+                'attack-item3': 'O\'rnatilgandan so\'ng, ilova Telegram sessiya ma\'lumotlari va kirish ma\'lumotlarini o\'g\'irlaydi.',
+                'attack-item4': 'Hujumchi qurbonning Telegram hisobi ustidan to\'liq nazoratga ega bo\'ladi.',
+                'attack-item5': 'Zararli dastur avtomatik ravishda ko\'proq kontaktlarga tarqalishda davom etadi.',
+                'simulation-title': 'Simulyatsiya mashqi',
+                'simulation-instruction': 'Xabarni o\'qing va qanday javob berishni hal qiling. Qaroringiz natijani belgilaydi.',
+                'message-from': 'Do\'stingiz',
+                'message-text': 'Salom, bu videoda sizmisiz? 😂 ',
+                'btn-safe': 'Xabarni e\'tiborsiz qoldirish va do\'stingizni ogohlantirish',
+                'btn-danger': 'APK faylini yuklab olish va ochish',
+                'btn-prev': 'Oldingi dars',
+                'btn-next': 'Keyingi dars',
+                'feedback-safe': '✅ Xavfsiz tanlov! Siz zararli dasturni yuklab olishdan qochib qutuldingiz va uning tarqalishini to\'xtatishga yordam berdingiz.',
+                'feedback-danger': '⚠️ Infektsiyalangan! Zararli APK soxta ilova o\'rnatdi, Telegram ma\'lumotlaringizni o\'g\'irladi va kontaktlaringizga fishing xabarlari yuborishni boshladi.'
+            }
+        };
+
+        let currentLang = localStorage.getItem('language') || 'en';
+        let answered = false;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.lang === currentLang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            updateLanguage();
+            
+            initLanguage();
+            updateProgress(100);
+        });
+
+        function initLanguage() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === currentLang);
+            });
+            updateLanguage();
+        }
+
+        // Language switching
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentLang = btn.dataset.lang;
+                localStorage.setItem('language', currentLang);
+                updateLanguage();
+            });
+        });
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.dataset.translate;
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        function updateProgress(percentage) {
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+            document.getElementById('progressPercentage').textContent = `${percentage}%`;
+        }
+
+        function handleSimulation(isSafe) {
+            if (answered) return;
+
+            answered = true;
+            const buttons = document.querySelectorAll('.sim-btn');
+            const feedback = document.getElementById('feedback');
+
+            // Disable buttons
+            buttons.forEach(btn => btn.classList.add('disabled'));
+
+            // Show feedback
+            if (isSafe) {
+                feedback.textContent = translations[currentLang]['feedback-safe'];
+                feedback.className = 'feedback show correct';
+            } else {
+                feedback.textContent = translations[currentLang]['feedback-danger'];
+                feedback.className = 'feedback show incorrect';
+            }
+        }
+    </script>
+</body>
+</html>

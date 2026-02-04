@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2 - Lesson 1: Telegram Phishing - PhishGuard.uz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --bg-gradient-start: #3b82f6;
+            --bg-gradient-end: #2563eb;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-white: #ffffff;
+            --bg-light: #f1f5f9;
+            --border-color: #e2e8f0;
+            --error-red: #dc2626;
+            --success-green: #16a34a;
+            --warning-yellow: #f59e0b;
+            --telegram-blue: #0088cc;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(37,99,235,0.12);
+            --shadow-lg: 0 20px 40px rgba(37,99,235,0.15);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Header */
+        .module-header {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--telegram-blue), #3aa7e8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .module-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .module-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .progress-percentage {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .progress-bar {
+            background: var(--bg-light);
+            height: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--telegram-blue), #3aa7e8);
+            width: 0%;
+            transition: width 0.6s ease;
+            border-radius: 8px;
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+        }
+
+        .lesson-section {
+            margin-bottom: 40px;
+        }
+
+        .lesson-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--telegram-blue), #3aa7e8);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .section-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .info-list li {
+            padding: 12px 16px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-size: 15px;
+            line-height: 1.6;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .info-list li::before {
+            content: '•';
+            color: var(--telegram-blue);
+            font-weight: 700;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .info-list li strong {
+            color: var(--telegram-blue);
+        }
+
+        /* Activity Section */
+        .activity-section {
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 40px;
+        }
+
+        .activity-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #0c4a6e;
+            margin-bottom: 24px;
+        }
+
+        .message-example {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .message-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .message-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        .message-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .message-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 12px 20px;
+            border: 2px solid var(--telegram-blue);
+            border-radius: 10px;
+            background: white;
+            color: var(--telegram-blue);
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .message-btn:hover:not(.disabled) {
+            background: var(--telegram-blue);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .message-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .message-btn.phishing {
+            border-color: var(--error-red);
+            color: var(--error-red);
+        }
+
+        .message-btn.phishing:hover:not(.disabled) {
+            background: var(--error-red);
+            color: white;
+        }
+
+        .message-btn.safe {
+            border-color: var(--success-green);
+            color: var(--success-green);
+        }
+
+        .message-btn.safe:hover:not(.disabled) {
+            background: var(--success-green);
+            color: white;
+        }
+
+        .feedback {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: var(--success-green);
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            color: var(--error-red);
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-btn-home {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .nav-btn-home:hover {
+            background: #e2e8f0;
+            transform: translateX(-4px);
+        }
+
+        .nav-btn-next {
+            background: var(--telegram-blue);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
+        }
+
+        .nav-btn-next:hover {
+            background: #0077b5;
+            transform: translateX(4px);
+            box-shadow: 0 6px 20px rgba(0, 136, 204, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 16px;
+            }
+
+            .module-header {
+                padding: 24px;
+            }
+
+            .module-title {
+                font-size: 24px;
+            }
+
+            .lesson-content {
+                padding: 24px;
+            }
+
+            .activity-section {
+                padding: 24px;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                max-width: 100%;
+            }
+
+            .message-buttons {
+                flex-direction: column;
+            }
+
+            .message-btn {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+            <a href="{{ url_for('home') }}" class="btn" style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-decoration: none; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span>Home</span>
+            </a>
+    <!-- Language Switch -->
+    <div class="lang-switch">
+        <button class="lang-btn active" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="uz">O'zbek</button>
+    </div>
+
+    <div class="page-container">
+        <!-- Module Header -->
+        <div class="module-header">
+            <div class="module-badge">
+                <span>📱</span>
+                <span data-translate="module-badge">Module 2 - Lesson 1</span>
+            </div>
+            <h1 class="module-title" data-translate="module-title">What is Telegram phishing and how does it work?</h1>
+            <p class="module-subtitle" data-translate="module-subtitle">
+                Learn how cybercriminals impersonate Telegram support to steal your data
+            </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-label">
+                <span class="progress-text" data-translate="progress-text">Lesson progress</span>
+                <span class="progress-percentage" id="progressPercentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Overview -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📖</span>
+                    <span data-translate="overview-title">Overview</span>
+                </h2>
+                <p class="section-content" data-translate="overview-text1">
+                    Telegram phishing is a form of social engineering attack where cybercriminals impersonate official Telegram support, admins, or bots to trick users into revealing sensitive data, such as login codes, passwords, or phone numbers.
+                </p>
+                <p class="section-content" data-translate="overview-text2">
+                    These attackers often use fake usernames or display pictures to look like legitimate Telegram staff. They may contact users privately, claiming there is a security issue or a verification process that requires urgent attention.
+                </p>
+            </div>
+
+            <!-- How It Happens -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">⚠️</span>
+                    <span data-translate="how-title">How it happens</span>
+                </h2>
+                <ul class="info-list">
+                    <li data-translate="how-item1">
+                        Fake "support" or "admin" accounts impersonating Telegram staff.
+                    </li>
+                    <li data-translate="how-item2">
+                        Messages claiming your account will be banned if you don't verify it immediately.
+                    </li>
+                    <li data-translate="how-item3">
+                        Links leading to phishing pages mimicking Telegram login screens.
+                    </li>
+                    <li data-translate="how-item4">
+                        Requests for your phone number, verification code, or password.
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Techniques Used -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">🎭</span>
+                    <span data-translate="techniques-title">Techniques used</span>
+                </h2>
+                <p class="section-content" data-translate="techniques-intro">
+                    Scammers build trust by using psychological manipulation, such as:
+                </p>
+                <ul class="info-list">
+                    <li>
+                        <strong data-translate="tech-urgency">Urgency:</strong>
+                        <span data-translate="tech-urgency-ex">"Your account will be deleted in 24 hours!"</span>
+                    </li>
+                    <li>
+                        <strong data-translate="tech-fear">Fear:</strong>
+                        <span data-translate="tech-fear-ex">"Your channel is under investigation."</span>
+                    </li>
+                    <li>
+                        <strong data-translate="tech-fake">Fake verification:</strong>
+                        <span data-translate="tech-fake-ex">"Send your code to confirm your identity."</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Activity Section -->
+            <div class="activity-section">
+                <div class="activity-title">
+                    <span>🧠</span>
+                    <span data-translate="activity-title">Activity: spot the red flags</span>
+                </div>
+                <p style="color: #0c4a6e; margin-bottom: 24px; font-weight: 500;" data-translate="activity-instruction">
+                    Read each message and decide if it's suspicious.
+                </p>
+
+                <!-- Message 1 -->
+                <div class="message-example" id="msg1">
+                    <p class="message-label" data-translate="msg1-label">Message 1:</p>
+                    <p class="message-text" data-translate="msg1-text">
+                        Hello, I am Telegram Support. Your account will be suspended soon! Please send your code to verify ownership.
+                    </p>
+                    <div class="message-buttons">
+                        <button class="message-btn phishing" onclick="checkMessage(1, true)" data-translate="btn-phishing">
+                            Mark as phishing
+                        </button>
+                        <button class="message-btn safe" onclick="checkMessage(1, false)" data-translate="btn-safe">
+                            Not phishing
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback1"></div>
+                </div>
+
+                <!-- Message 2 -->
+                <div class="message-example" id="msg2">
+                    <p class="message-label" data-translate="msg2-label">Message 2:</p>
+                    <p class="message-text" data-translate="msg2-text">
+                        Telegram will never ask for your verification code. Keep it secret to protect your account.
+                    </p>
+                    <div class="message-buttons">
+                        <button class="message-btn phishing" onclick="checkMessage(2, true)" data-translate="btn-phishing">
+                            Mark as phishing
+                        </button>
+                        <button class="message-btn safe" onclick="checkMessage(2, false)" data-translate="btn-safe">
+                            Not phishing
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback2"></div>
+                </div>
+
+                <!-- Message 3 -->
+                <div class="message-example" id="msg3">
+                    <p class="message-label" data-translate="msg3-label">Message 3:</p>
+                    <p class="message-text" data-translate="msg3-text">
+                        Congratulations! You've won free Telegram Premium. Click here to claim your reward.
+                    </p>
+                    <div class="message-buttons">
+                        <button class="message-btn phishing" onclick="checkMessage(3, true)" data-translate="btn-phishing">
+                            Mark as phishing
+                        </button>
+                        <button class="message-btn safe" onclick="checkMessage(3, false)" data-translate="btn-safe">
+                            Not phishing
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback3"></div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <a href="{{ url_for('home') }}" class="nav-btn nav-btn-home">
+                    <span>⬅️</span>
+                    <span data-translate="btn-home">Back to home</span>
+                </a>
+                <a href="{{ url_for('lesson', module=2, lesson=2) }}" class="nav-btn nav-btn-next">
+                    <span data-translate="btn-next">Next lesson</span>
+                    <span>➡️</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translations
+        const translations = {
+            en: {
+                'module-badge': 'Module 2 - Lesson 1',
+                'module-title': 'What is Telegram phishing and how does it work?',
+                'module-subtitle': 'Learn how cybercriminals impersonate Telegram support to steal your data',
+                'progress-text': 'Lesson progress',
+                'overview-title': 'Overview',
+                'overview-text1': 'Telegram phishing is a form of social engineering attack where cybercriminals impersonate official Telegram support, admins, or bots to trick users into revealing sensitive data, such as login codes, passwords, or phone numbers.',
+                'overview-text2': 'These attackers often use fake usernames or display pictures to look like legitimate Telegram staff. They may contact users privately, claiming there is a security issue or a verification process that requires urgent attention.',
+                'how-title': 'How it happens',
+                'how-item1': 'Fake "support" or "admin" accounts impersonating Telegram staff.',
+                'how-item2': 'Messages claiming your account will be banned if you don\'t verify it immediately.',
+                'how-item3': 'Links leading to phishing pages mimicking Telegram login screens.',
+                'how-item4': 'Requests for your phone number, verification code, or password.',
+                'techniques-title': 'Techniques used',
+                'techniques-intro': 'Scammers build trust by using psychological manipulation, such as:',
+                'tech-urgency': 'Urgency:',
+                'tech-urgency-ex': '"Your account will be deleted in 24 hours!"',
+                'tech-fear': 'Fear:',
+                'tech-fear-ex': '"Your channel is under investigation."',
+                'tech-fake': 'Fake verification:',
+                'tech-fake-ex': '"Send your code to confirm your identity."',
+                'activity-title': 'Activity: spot the red flags',
+                'activity-instruction': 'Read each message and decide if it\'s suspicious.',
+                'msg1-label': 'Message 1:',
+                'msg1-text': 'Hello, I am Telegram Support. Your account will be suspended soon! Please send your code to verify ownership.',
+                'msg2-label': 'Message 2:',
+                'msg2-text': 'Telegram will never ask for your verification code. Keep it secret to protect your account.',
+                'msg3-label': 'Message 3:',
+                'msg3-text': 'Congratulations! You\'ve won free Telegram Premium. Click here to claim your reward.',
+                'btn-phishing': 'Mark as phishing',
+                'btn-safe': 'Not phishing',
+                'btn-home': 'Back to home',
+                'btn-next': 'Next lesson',
+                'alert-correct': '✅ Correct!',
+                'alert-incorrect': '❌ Incorrect. Think carefully about the warning signs.'
+            },
+            uz: {
+                'module-badge': '2-modul - 1-dars',
+                'module-title': 'Telegram fishing nima va u qanday ishlaydi?',
+                'module-subtitle': 'Kiberjinoyatchilar ma\'lumotlaringizni o\'g\'irlash uchun Telegram qo\'llab-quvvatlashini qanday taqlid qilishini bilib oling',
+                'progress-text': 'Dars jarayoni',
+                'overview-title': 'Umumiy ko\'rinish',
+                'overview-text1': 'Telegram fishing - bu kiberjinoyatchilar rasmiy Telegram qo\'llab-quvvatlash, administratorlar yoki botlarni taqlid qilish orqali foydalanuvchilarni kirish kodlari, parollar yoki telefon raqamlari kabi maxfiy ma\'lumotlarni oshkor qilishga aldaydigan ijtimoiy muhandislik hujumi.',
+                'overview-text2': 'Bu hujumchilar ko\'pincha qonuniy Telegram xodimlari kabi ko\'rinish uchun soxta foydalanuvchi nomlari yoki profil rasmlaridan foydalanadilar. Ular foydalanuvchilarga shaxsiy xabar yuborishlari mumkin, xavfsizlik muammosi yoki zudlik bilan e\'tibor talab qiladigan tekshiruv jarayoni borligini da\'vo qilishlari mumkin.',
+                'how-title': 'Bu qanday sodir bo\'ladi',
+                'how-item1': 'Telegram xodimlarini taqlid qiluvchi soxta "qo\'llab-quvvatlash" yoki "admin" hisoblar.',
+                'how-item2': 'Agar darhol tasdiqlamasangiz, hisobingiz bloklangan bo\'ladi degan xabarlar.',
+                'how-item3': 'Telegram kirish ekranlarini taqlid qiluvchi fishing sahifalariga olib boradigan havolalar.',
+                'how-item4': 'Telefon raqamingiz, tasdiqlash kodingiz yoki parolingiz so\'rovlari.',
+                'techniques-title': 'Foydalaniladigan usullar',
+                'techniques-intro': 'Firibgarlar quyidagi psixologik manipulyatsiyalar yordamida ishonch hosil qilishadi:',
+                'tech-urgency': 'Shoshilinchlik:',
+                'tech-urgency-ex': '"Hisobingiz 24 soat ichida o\'chiriladi!"',
+                'tech-fear': 'Qo\'rquv:',
+                'tech-fear-ex': '"Kanalingiz tekshirilmoqda."',
+                'tech-fake': 'Soxta tekshiruv:',
+                'tech-fake-ex': '"Shaxsingizni tasdiqlash uchun kodingizni yuboring."',
+                'activity-title': 'Mashq: xavfli belgilarni aniqlang',
+                'activity-instruction': 'Har bir xabarni o\'qing va u shubhali yoki yo\'qligini aniqlang.',
+                'msg1-label': '1-xabar:',
+                'msg1-text': 'Salom, men Telegram qo\'llab-quvvatlashman. Hisobingiz tez orada to\'xtatiladi! Iltimos, egalikni tasdiqlash uchun kodingizni yuboring.',
+                'msg2-label': '2-xabar:',
+                'msg2-text': 'Telegram hech qachon tasdiqlash kodingizni so\'ramaydi. Hisobingizni himoya qilish uchun uni maxfiy saqlang.',
+                'msg3-label': '3-xabar:',
+                'msg3-text': 'Tabriklaymiz! Siz bepul Telegram Premium yutib oldingiz. Mukofotingizni olish uchun bu yerni bosing.',
+                'btn-phishing': 'Fishing sifatida belgilash',
+                'btn-safe': 'Fishing emas',
+                'btn-home': 'Bosh sahifaga qaytish',
+                'btn-next': 'Keyingi dars',
+                'alert-correct': '✅ To\'g\'ri!',
+                'alert-incorrect': '❌ Noto\'g\'ri. Ogohlantirish belgilari haqida diqqat bilan o\'ylab ko\'ring.'
+            }
+        };
+
+        let currentLang = localStorage.getItem('language') || 'en';
+        const answeredMessages = new Set();
+
+        // Correct answers: Message 1 = phishing, Message 2 = not phishing, Message 3 = phishing
+        const correctAnswers = {
+            1: true,  // is phishing
+            2: false, // not phishing
+            3: true   // is phishing
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.lang === currentLang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            updateLanguage();
+            
+            initLanguage();
+            updateProgress(100);
+        });
+
+        function initLanguage() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === currentLang);
+            });
+            updateLanguage();
+        }
+
+        // Language switching
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentLang = btn.dataset.lang;
+                localStorage.setItem('language', currentLang);
+                updateLanguage();
+            });
+        });
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.dataset.translate;
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        function updateProgress(percentage) {
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+            document.getElementById('progressPercentage').textContent = `${percentage}%`;
+        }
+
+        function checkMessage(msgNum, isPhishing) {
+            if (answeredMessages.has(msgNum)) return;
+
+            answeredMessages.add(msgNum);
+            const messageBox = document.getElementById('msg' + msgNum);
+            const buttons = messageBox.querySelectorAll('.message-btn');
+            const feedback = document.getElementById('feedback' + msgNum);
+
+            // Disable buttons
+            buttons.forEach(btn => btn.classList.add('disabled'));
+
+            const isCorrect = (correctAnswers[msgNum] === isPhishing);
+            
+            // Show feedback below the question
+            if (isCorrect) {
+                feedback.textContent = translations[currentLang]['alert-correct'];
+                feedback.className = 'feedback show correct';
+            } else {
+                feedback.textContent = translations[currentLang]['alert-incorrect'];
+                feedback.className = 'feedback show incorrect';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1 - Lesson 2: Common Phishing Types - PhishGuard.uz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --bg-gradient-start: #3b82f6;
+            --bg-gradient-end: #2563eb;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-white: #ffffff;
+            --bg-light: #f1f5f9;
+            --border-color: #e2e8f0;
+            --error-red: #dc2626;
+            --success-green: #16a34a;
+            --warning-yellow: #f59e0b;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(37,99,235,0.12);
+            --shadow-lg: 0 20px 40px rgba(37,99,235,0.15);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Header */
+        .module-header {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--primary-blue), #60a5fa);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .module-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .module-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .progress-percentage {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .progress-bar {
+            background: var(--bg-light);
+            height: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-blue), #60a5fa);
+            width: 0%;
+            transition: width 0.6s ease;
+            border-radius: 8px;
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+        }
+
+        .lesson-section {
+            margin-bottom: 40px;
+        }
+
+        .lesson-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary-blue), #60a5fa);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .section-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        /* Example Box */
+        .example-box {
+            background: #f0f9ff;
+            border-left: 4px solid var(--primary-blue);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin: 24px 0;
+        }
+
+        .example-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .example-text {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-dark);
+            font-style: italic;
+        }
+
+        .fake-link {
+            color: var(--primary-blue);
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Mini Game */
+        .mini-game {
+            background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 40px;
+        }
+
+        .mini-game-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #5b21b6;
+            margin-bottom: 24px;
+        }
+
+        .message-box {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .message-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .message-content {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+
+        .message-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .game-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 12px 20px;
+            border: 2px solid var(--primary-blue);
+            border-radius: 10px;
+            background: white;
+            color: var(--primary-blue);
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .game-btn:hover {
+            background: var(--primary-blue);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .game-btn.selected {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .game-btn.correct {
+            background: var(--success-green);
+            border-color: var(--success-green);
+            color: white;
+        }
+
+        .game-btn.incorrect {
+            background: var(--error-red);
+            border-color: var(--error-red);
+            color: white;
+        }
+
+        .game-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .feedback {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: var(--success-green);
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            color: var(--error-red);
+        }
+
+        .game-score {
+            text-align: center;
+            margin-top: 24px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .game-score.show {
+            display: block;
+        }
+
+        .score-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .score-details {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-btn-prev {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .nav-btn-prev:hover {
+            background: #e2e8f0;
+            transform: translateX(-4px);
+        }
+
+        .nav-btn-next {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+
+        .nav-btn-next:hover {
+            background: var(--primary-blue-dark);
+            transform: translateX(4px);
+            box-shadow: 0 6px 20px rgba(37,99,235,0.4);
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 16px;
+            }
+
+            .module-header {
+                padding: 24px;
+            }
+
+            .module-title {
+                font-size: 24px;
+            }
+
+            .lesson-content {
+                padding: 24px;
+            }
+
+            .mini-game {
+                padding: 24px;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                max-width: 100%;
+            }
+
+            .message-buttons {
+                flex-direction: column;
+            }
+
+            .game-btn {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+            <a href="{{ url_for('home') }}" class="btn" style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-decoration: none; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span>Home</span>
+            </a>
+    <!-- Language Switch -->
+    <div class="lang-switch">
+        <button class="lang-btn active" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="uz">O'zbek</button>
+    </div>
+
+    <div class="page-container">
+        <!-- Module Header -->
+        <div class="module-header">
+            <div class="module-badge">
+                <span>📚</span>
+                <span data-translate="module-badge">Module 1 - Lesson 2</span>
+            </div>
+            <h1 class="module-title" data-translate="module-title">Common phishing types in Uzbekistan</h1>
+            <p class="module-subtitle" data-translate="module-subtitle">
+                Discover the most prevalent phishing techniques targeting Uzbek organizations and how to recognize them
+            </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-label">
+                <span class="progress-text" data-translate="progress-text">Lesson progress</span>
+                <span class="progress-percentage" id="progressPercentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Email Phishing -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📧</span>
+                    <span data-translate="section1-title">Email phishing</span>
+                </h2>
+                <p class="section-content" data-translate="section1-content">
+                    This is the most common type of phishing. Attackers send fake emails pretending to be from banks, tech companies, or colleagues. The goal is to trick you into clicking a link or opening an attachment.
+                </p>
+
+                <div class="example-box">
+                    <div class="example-label" data-translate="example-label">💡 Example</div>
+                    <p class="example-text" data-translate="section1-example">
+                        "Dear Customer, your bank account has been locked for security reasons. Click below to verify your details."
+                    </p>
+                    <p style="margin-top: 12px;">
+                        <span style="font-weight: 600;">👉 Fake link:</span> 
+                        <span class="fake-link">https://secure-bank-verify-login.com</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- SMS Phishing -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📱</span>
+                    <span data-translate="section2-title">SMS phishing (Smishing)</span>
+                </h2>
+                <p class="section-content" data-translate="section2-content">
+                    In smishing, attackers send text messages that appear to come from legitimate services like delivery companies or government agencies.
+                </p>
+
+                <div class="example-box">
+                    <div class="example-label" data-translate="example-label">💡 Example</div>
+                    <p class="example-text" data-translate="section2-example">
+                        "Your package is waiting for delivery confirmation. Please confirm your address: http://mydelivery-update.info"
+                    </p>
+                </div>
+            </div>
+
+            <!-- Voice Phishing -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📞</span>
+                    <span data-translate="section3-title">Voice phishing (Vishing)</span>
+                </h2>
+                <p class="section-content" data-translate="section3-content">
+                    Vishing involves phone calls or voice messages that pressure you to share information or make payments. Attackers often impersonate customer support or IT departments.
+                </p>
+
+                <div class="example-box">
+                    <div class="example-label" data-translate="example-label">💡 Example</div>
+                    <p class="example-text" data-translate="section3-example">
+                        "This is John from your IT department. We detected malware on your system. Please provide your login details so we can fix it."
+                    </p>
+                </div>
+            </div>
+
+            <!-- Mini Game -->
+            <div class="mini-game">
+                <div class="mini-game-title">
+                    <span>🎮</span>
+                    <span data-translate="game-title">Mini game: is it phishing or not?</span>
+                </div>
+
+                <!-- Message 1 -->
+                <div class="message-box" id="msg1">
+                    <p class="message-title" data-translate="msg1-title">Message 1:</p>
+                    <p class="message-content" data-translate="msg1-content">
+                        "Hi, this is HR. Please complete the attached form to confirm your bank details for payroll."
+                    </p>
+                    <div class="message-buttons">
+                        <button class="game-btn" onclick="checkAnswer('msg1', true)" data-translate="btn-phishing">
+                            Phishing
+                        </button>
+                        <button class="game-btn" onclick="checkAnswer('msg1', false)" data-translate="btn-not-phishing">
+                            Not phishing
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback1"></div>
+                </div>
+
+                <!-- Message 2 -->
+                <div class="message-box" id="msg2">
+                    <p class="message-title" data-translate="msg2-title">Message 2:</p>
+                    <p class="message-content" data-translate="msg2-content">
+                        "Your Netflix payment failed. Click here to update your billing info."
+                    </p>
+                    <div class="message-buttons">
+                        <button class="game-btn" onclick="checkAnswer('msg2', true)" data-translate="btn-phishing">
+                            Phishing
+                        </button>
+                        <button class="game-btn" onclick="checkAnswer('msg2', false)" data-translate="btn-not-phishing">
+                            Not phishing
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback2"></div>
+                </div>
+
+                <!-- Message 3 -->
+                <div class="message-box" id="msg3">
+                    <p class="message-title" data-translate="msg3-title">Message 3:</p>
+                    <p class="message-content" data-translate="msg3-content">
+                        "Reminder: Your dentist appointment is tomorrow at 10:30 AM."
+                    </p>
+                    <div class="message-buttons">
+                        <button class="game-btn" onclick="checkAnswer('msg3', true)" data-translate="btn-phishing">
+                            Phishing
+                        </button>
+                        <button class="game-btn" onclick="checkAnswer('msg3', false)" data-translate="btn-not-phishing">
+                            Not phishing
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback3"></div>
+                </div>
+
+                <div class="game-score" id="gameScore">
+                    <div class="score-text" id="scoreText"></div>
+                    <div class="score-details" data-translate="score-details">Great job completing the mini game!</div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <a href="{{ url_for('home') }}" class="nav-btn nav-btn-prev">
+                    <span>⬅️</span>
+                    <span data-translate="btn-prev">Previous lesson</span>
+                </a>
+                <a href="{{ url_for('lesson', module=1, lesson=3) }}" class="nav-btn nav-btn-next">
+                    <span data-translate="btn-next">Next lesson</span>
+                    <span>➡️</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translations
+        const translations = {
+            en: {
+                'module-badge': 'Module 1 - Lesson 2',
+                'module-title': 'Common phishing types in Uzbekistan',
+                'module-subtitle': 'Discover the most prevalent phishing techniques targeting Uzbek organizations and how to recognize them',
+                'progress-text': 'Lesson progress',
+                'section1-title': 'Email phishing',
+                'section1-content': 'This is the most common type of phishing. Attackers send fake emails pretending to be from banks, tech companies, or colleagues. The goal is to trick you into clicking a link or opening an attachment.',
+                'example-label': '💡 Example',
+                'section1-example': '"Dear Customer, your bank account has been locked for security reasons. Click below to verify your details."',
+                'section2-title': 'SMS phishing (Smishing)',
+                'section2-content': 'In smishing, attackers send text messages that appear to come from legitimate services like delivery companies or government agencies.',
+                'section2-example': '"Your package is waiting for delivery confirmation. Please confirm your address: http://mydelivery-update.info"',
+                'section3-title': 'Voice phishing (Vishing)',
+                'section3-content': 'Vishing involves phone calls or voice messages that pressure you to share information or make payments. Attackers often impersonate customer support or IT departments.',
+                'section3-example': '"This is John from your IT department. We detected malware on your system. Please provide your login details so we can fix it."',
+                'game-title': 'Mini game: is it phishing or not?',
+                'msg1-title': 'Message 1:',
+                'msg1-content': '"Hi, this is HR. Please complete the attached form to confirm your bank details for payroll."',
+                'msg2-title': 'Message 2:',
+                'msg2-content': '"Your Netflix payment failed. Click here to update your billing info."',
+                'msg3-title': 'Message 3:',
+                'msg3-content': '"Reminder: Your dentist appointment is tomorrow at 10:30 AM."',
+                'btn-phishing': 'Phishing',
+                'btn-not-phishing': 'Not phishing',
+                'feedback-msg1-correct': '✅ Correct! HR will never ask for sensitive info by email.',
+                'feedback-msg1-incorrect': '❌ Incorrect. Look closely at the sender and message context.',
+                'feedback-msg2-correct': '✅ Right! Always update subscriptions from the official site.',
+                'feedback-msg2-incorrect': '❌ Incorrect. This is a phishing attempt!',
+                'feedback-msg3-correct': '✅ Correct! That\'s a normal reminder, not phishing.',
+                'feedback-msg3-incorrect': '❌ Incorrect. This is a legitimate appointment reminder.',
+                'score-text': 'Your score: {score} out of 3',
+                'score-details': 'Great job completing the mini game!',
+                'btn-prev': 'Previous lesson',
+                'btn-next': 'Next lesson'
+            },
+            uz: {
+                'module-badge': '1-modul - 2-dars',
+                'module-title': 'O\'zbekistondagi fishing turlari',
+                'module-subtitle': 'O\'zbekiston tashkilotlariga qarshi qo\'llaniladigan eng keng tarqalgan fishing usullarini va ularni qanday tanish mumkinligini bilib oling',
+                'progress-text': 'Dars jarayoni',
+                'section1-title': 'Email fishing',
+                'section1-content': 'Bu fishingning eng keng tarqalgan turi. Hujumchilar banklar, texnologiya kompaniyalari yoki hamkasblaringizdan kelayotganga o\'xshagan soxta elektron xatlar yuboradi. Maqsad sizni havolani bosishga yoki qo\'shimchani ochishga aldashdir.',
+                'example-label': '💡 Misol',
+                'section1-example': '"Hurmatli mijoz, xavfsizlik sabablari tufayli bank hisobingiz bloklandi. Ma\'lumotlaringizni tasdiqlash uchun quyidagi tugmani bosing."',
+                'section2-title': 'SMS fishing (Smishing)',
+                'section2-content': 'Smishingda hujumchilar yetkazib berish kompaniyalari yoki davlat idoralari kabi qonuniy xizmatlardan kelayotganga o\'xshagan matnli xabarlar yuboradi.',
+                'section2-example': '"Sizning posilkangiz yetkazib berish tasdiqini kutmoqda. Iltimos, manzilingizni tasdiqlang: http://mydelivery-update.info"',
+                'section3-title': 'Ovozli fishing (Vishing)',
+                'section3-content': 'Vishing telefon qo\'ng\'iroqlari yoki ovozli xabarlarni o\'z ichiga oladi, ular sizni ma\'lumot ulashishga yoki to\'lovlar qilishga bosim o\'tkazadi. Hujumchilar ko\'pincha mijozlarni qo\'llab-quvvatlash yoki IT bo\'limlarini taqlid qiladi.',
+                'section3-example': '"Bu IT bo\'limingizdan Jon. Biz tizimingizda zararli dastur aniqladik. Iltimos, uni tuzatishimiz uchun kirish ma\'lumotlaringizni bering."',
+                'game-title': 'Mini o\'yin: bu fishing yoki yo\'qmi?',
+                'msg1-title': '1-xabar:',
+                'msg1-content': '"Salom, bu kadrlar bo\'limi. Iltimos, ish haqi uchun bank ma\'lumotlaringizni tasdiqlash uchun ilova qilingan shaklni to\'ldiring."',
+                'msg2-title': '2-xabar:',
+                'msg2-content': '"Netflix to\'lovingiz muvaffaqiyatsiz yakunlandi. Hisob-faktura ma\'lumotlaringizni yangilash uchun bu yerni bosing."',
+                'msg3-title': '3-xabar:',
+                'msg3-content': '"Eslatma: Ertaga soat 10:30 da stomatologogingizga uchrashuvingiz bor."',
+                'btn-phishing': 'Fishing',
+                'btn-not-phishing': 'Fishing emas',
+                'feedback-msg1-correct': '✅ To\'g\'ri! Kadrlar bo\'limi hech qachon elektron pochta orqali maxfiy ma\'lumotlarni so\'ramaydi.',
+                'feedback-msg1-incorrect': '❌ Noto\'g\'ri. Jo\'natuvchi va xabar kontekstiga diqqat bilan qarang.',
+                'feedback-msg2-correct': '✅ To\'g\'ri! Obunalarni har doim rasmiy saytdan yangilang.',
+                'feedback-msg2-incorrect': '❌ Noto\'g\'ri. Bu fishing urinishi!',
+                'feedback-msg3-correct': '✅ To\'g\'ri! Bu oddiy eslatma, fishing emas.',
+                'feedback-msg3-incorrect': '❌ Noto\'g\'ri. Bu qonuniy uchrashuvga eslatma.',
+                'score-text': 'Sizning natijangiz: 3 tadan {score}',
+                'score-details': 'Mini o\'yinni tugatganingiz uchun ajoyib!',
+                'btn-prev': 'Oldingi dars',
+                'btn-next': 'Keyingi dars'
+            }
+        };
+
+        let currentLang = localStorage.getItem('language') || 'en';
+        let answeredQuestions = new Set();
+        // Correct answers: msg1=phishing(true), msg2=phishing(true), msg3=NOT phishing(false)
+        const correctAnswers = { msg1: true, msg2: true, msg3: false };
+        let score = 0;
+        let totalQuestions = 3;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === currentLang);
+            });
+            updateLanguage();
+            updateProgress(100);
+        });
+
+        // Language switching
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentLang = btn.dataset.lang;
+                localStorage.setItem('language', currentLang);
+                updateLanguage();
+            });
+        });
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.dataset.translate;
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        function updateProgress(percentage) {
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+            document.getElementById('progressPercentage').textContent = `${percentage}%`;
+        }
+
+        function checkAnswer(q, choice) {
+            // Prevent re-answering
+            if (answeredQuestions.has(q)) return;
+
+            // q is 'msg1','msg2','msg3' — extract the number for feedback ID
+            const num = q.replace('msg', '');
+            const feedback = document.getElementById('feedback' + num);
+            if (!feedback) return;
+
+            answeredQuestions.add(q);
+
+            // Disable all buttons in this message box
+            const msgBox = document.getElementById(q);
+            if (msgBox) {
+                msgBox.querySelectorAll('.game-btn').forEach(btn => btn.classList.add('disabled'));
+            }
+
+            // Highlight buttons: green for correct, red if user picked wrong
+            if (msgBox) {
+                msgBox.querySelectorAll('.game-btn').forEach(btn => {
+                    const onclickAttr = btn.getAttribute('onclick');
+                    if (onclickAttr) {
+                        const match = onclickAttr.match(/checkAnswer\s*\(\s*['"][^'"]+['"]\s*,\s*(true|false)\s*\)/);
+                        if (match) {
+                            const btnValue = match[1] === 'true';
+                            if (btnValue === correctAnswers[q]) {
+                                btn.classList.add('correct');
+                            }
+                            if (btnValue === choice && choice !== correctAnswers[q]) {
+                                btn.classList.add('incorrect');
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Show feedback
+            if (choice === correctAnswers[q]) {
+                feedback.textContent = translations[currentLang]['feedback-correct'];
+                feedback.className = 'feedback show correct';
+                score++;
+            } else {
+                feedback.textContent = translations[currentLang]['feedback-wrong'];
+                feedback.className = 'feedback show wrong';
+            }
+
+            // If all answered, show score after delay
+            if (answeredQuestions.size === totalQuestions) {
+                setTimeout(() => showScore(), 600);
+            }
+        }
+
+        function showScore() {
+            const scoreDiv = document.getElementById('gameScore');
+            const scoreText = document.getElementById('scoreText');
+            scoreText.textContent = translations[currentLang]['score-text'].replace('{score}', score);
+            scoreDiv.classList.add('show');
+            setTimeout(() => {
+                scoreDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 300);
+        }
+    </script>
+</body>
+</html>

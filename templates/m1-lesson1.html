@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1 - Lesson 1: Introduction to Phishing - PhishGuard.uz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --bg-gradient-start: #3b82f6;
+            --bg-gradient-end: #2563eb;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-white: #ffffff;
+            --bg-light: #f1f5f9;
+            --border-color: #e2e8f0;
+            --error-red: #dc2626;
+            --success-green: #16a34a;
+            --warning-yellow: #f59e0b;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(37,99,235,0.12);
+            --shadow-lg: 0 20px 40px rgba(37,99,235,0.15);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Header */
+        .module-header {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--primary-blue), #60a5fa);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .module-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .module-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .progress-percentage {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .progress-bar {
+            background: var(--bg-light);
+            height: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-blue), #60a5fa);
+            width: 0%;
+            transition: width 0.6s ease;
+            border-radius: 8px;
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+        }
+
+        .lesson-section {
+            margin-bottom: 40px;
+        }
+
+        .lesson-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary-blue), #60a5fa);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .section-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        /* Example Box */
+        .example-box {
+            background: #f0f9ff;
+            border-left: 4px solid var(--primary-blue);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin: 24px 0;
+        }
+
+        .example-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .example-text {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-dark);
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: #fef3c7;
+            border-left: 4px solid var(--warning-yellow);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin: 24px 0;
+        }
+
+        .warning-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 12px;
+        }
+
+        .warning-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .warning-list li {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #78350f;
+            margin-bottom: 8px;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .warning-list li::before {
+            content: '•';
+            position: absolute;
+            left: 8px;
+            font-weight: 700;
+            color: var(--warning-yellow);
+        }
+
+        /* Info Box */
+        .info-box {
+            background: #f0fdf4;
+            border-left: 4px solid var(--success-green);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin: 24px 0;
+        }
+
+        .info-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #166534;
+            margin-bottom: 12px;
+        }
+
+        .info-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .info-list li {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #14532d;
+            margin-bottom: 8px;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .info-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 8px;
+            font-weight: 700;
+            color: var(--success-green);
+        }
+
+        /* Quiz Section */
+        .quiz-section {
+            background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 40px;
+        }
+
+        .quiz-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #5b21b6;
+            margin-bottom: 20px;
+        }
+
+        .quiz-question {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .quiz-option {
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .quiz-option:hover {
+            border-color: var(--primary-blue);
+            background: #f0f9ff;
+            transform: translateX(4px);
+        }
+
+        .quiz-option.selected {
+            border-color: var(--primary-blue);
+            background: #dbeafe;
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success-green);
+            background: #dcfce7;
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error-red);
+            background: #fee2e2;
+        }
+
+        .quiz-feedback {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+            display: none;
+        }
+
+        .quiz-feedback.show {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        .feedback-correct {
+            color: var(--success-green);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .feedback-incorrect {
+            color: var(--error-red);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .feedback-text {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-btn-home {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .nav-btn-home:hover {
+            background: #e2e8f0;
+            transform: translateX(-4px);
+        }
+
+        .nav-btn-next {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+
+        .nav-btn-next:hover {
+            background: var(--primary-blue-dark);
+            transform: translateX(4px);
+            box-shadow: 0 6px 20px rgba(37,99,235,0.4);
+        }
+
+        /* Simulator Box */
+        .simulator-box {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 24px 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .simulator-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .email-mock {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .email-header {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .email-field {
+            margin-bottom: 6px;
+        }
+
+        .email-field strong {
+            color: var(--text-muted);
+            display: inline-block;
+            width: 60px;
+        }
+
+        .email-body {
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        .suspicious-link {
+            color: var(--primary-blue);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 16px;
+            }
+
+            .module-header {
+                padding: 24px;
+            }
+
+            .module-title {
+                font-size: 24px;
+            }
+
+            .lesson-content {
+                padding: 24px;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+            <a href="{{ url_for('home') }}" class="btn" style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-decoration: none; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span>Home</span>
+            </a>
+    <!-- Language Switch -->
+    <div class="lang-switch">
+        <a href="{{ url_for('set_lang', lang='en') }}" class="lang-btn {% if lang == 'en' %}active{% endif %}" style="text-decoration:none;display:inline-block;">English</a>
+        <a href="{{ url_for('set_lang', lang='uz') }}" class="lang-btn {% if lang == 'uz' %}active{% endif %}" style="text-decoration:none;display:inline-block;">O'zbek</a>
+    </div>
+
+    <div class="page-container">
+        <!-- Module Header -->
+        <div class="module-header">
+            <div class="module-badge">
+                <span>📚</span>
+                <span data-translate="module-badge">Module 1 - Lesson 1</span>
+            </div>
+            <h1 class="module-title" data-translate="module-title">Introduction to phishing</h1>
+            <p class="module-subtitle" data-translate="module-subtitle">
+                Learn the fundamentals of phishing attacks, how they work, and why they're dangerous for organizations
+            </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-label">
+                <span class="progress-text" data-translate="progress-text">Lesson progress</span>
+                <span class="progress-percentage" id="progressPercentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- What is Phishing -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">🎣</span>
+                    <span data-translate="section1-title">What is phishing?</span>
+                </h2>
+                <p class="section-content" data-translate="section1-content">
+                    Phishing is a cyberattack that uses deceptive emails, messages, or websites to trick individuals into revealing personal information — like passwords, credit card details, or login credentials.
+                </p>
+
+                <div class="example-box">
+                    <div class="example-label" data-translate="example-label">💡 Example</div>
+                    <p class="example-text" data-translate="section1-example">
+                        You receive an email that looks like it's from your bank, saying your account will be locked unless you click a link. The link leads to a fake website designed to steal your information.
+                    </p>
+                </div>
+
+                <!-- Real-life Simulator -->
+                <div class="simulator-box">
+                    <div class="simulator-label">
+                        <span>🖥️</span>
+                        <span data-translate="simulator-label">Real-life phishing email simulator</span>
+                    </div>
+                    <div class="email-mock">
+                        <div class="email-header">
+                            <div class="email-field">
+                                <strong>From:</strong> <span data-translate="sim-from"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c1b2a4a2b4b3a8b5b881a3a0afaaaaeca0ada4b3b5efa2aeac">[email&#160;protected]</a></span>
+                            </div>
+                            <div class="email-field">
+                                <strong>To:</strong> <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3e47514b7e5d51534e5f5047105d5153">[email&#160;protected]</a>
+                            </div>
+                            <div class="email-field">
+                                <strong>Subject:</strong> <span data-translate="sim-subject">URGENT: Your Account Will Be Suspended</span>
+                            </div>
+                        </div>
+                        <div class="email-body" data-translate="sim-body">
+                            <p>Dear Customer,</p>
+                            <p>We have detected unusual activity on your account. To prevent suspension, please verify your identity immediately by clicking the link below:</p>
+                            <p><span class="suspicious-link">http://bankk-verify-account.com/login</span></p>
+                            <p>If you do not respond within 24 hours, your account will be permanently locked.</p>
+                            <p>Thank you,<br>Security Team</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Why It's Dangerous -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">⚠️</span>
+                    <span data-translate="section2-title">Why it's dangerous</span>
+                </h2>
+                
+                <div class="warning-box">
+                    <div class="warning-title">
+                        <span>⚠️</span>
+                        <span data-translate="danger-title">Critical facts</span>
+                    </div>
+                    <ul class="warning-list">
+                        <li data-translate="danger-fact1">Phishing is responsible for over 80% of cyber breaches.</li>
+                        <li data-translate="danger-fact2">AI-generated phishing emails are nearly indistinguishable from real ones.</li>
+                        <li data-translate="danger-fact3">Even cybersecurity experts can be tricked by realistic messages.</li>
+                    </ul>
+                </div>
+
+                <p class="section-content" data-translate="section2-content">
+                    Recognizing phishing attempts protects not just your account — but your organization, data, and reputation.
+                </p>
+            </div>
+
+            <!-- Common Signs -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">🔍</span>
+                    <span data-translate="section3-title">Common signs of a phishing email</span>
+                </h2>
+                
+                <div class="info-box">
+                    <div class="info-title">
+                        <span>🔍</span>
+                        <span data-translate="signs-title">Watch out for these red flags</span>
+                    </div>
+                    <ul class="info-list">
+                        <li data-translate="sign1">Urgent or threatening tone ("Your account will be suspended!")</li>
+                        <li data-translate="sign2">Unexpected links or attachments</li>
+                        <li data-translate="sign3">Spelling or grammar mistakes</li>
+                        <li data-translate="sign4">Sender address doesn't match the organization domain</li>
+                        <li data-translate="sign5">Requests for personal or financial information</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Quiz Section -->
+            <div class="quiz-section">
+                <div class="quiz-title">
+                    <span>🧠</span>
+                    <span data-translate="quiz-title">Quick quiz – test your knowledge</span>
+                </div>
+
+                <div class="quiz-question">
+                    <p class="question-text" data-translate="quiz-question">
+                        You get an email that says "Your PayPal account has been restricted. Click here to restore access." What should you do?
+                    </p>
+                    <div class="quiz-options">
+                        <div class="quiz-option" data-answer="correct" data-translate="quiz-option1">
+                            Ignore and report it as phishing
+                        </div>
+                        <div class="quiz-option" data-answer="incorrect" data-translate="quiz-option2">
+                            Click the link to check your account
+                        </div>
+                    </div>
+                    <div class="quiz-feedback" id="quizFeedback">
+                        <div class="feedback-message"></div>
+                        <p class="feedback-text"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <a href="{{ url_for('home') }}" class="nav-btn nav-btn-home">
+                    <span>⬅️</span>
+                    <span data-translate="btn-home">Home page</span>
+                </a>
+                <a href="{{ url_for('lesson', module=1, lesson=2) }}" class="nav-btn nav-btn-next">
+                    <span data-translate="btn-next">Next lesson</span>
+                    <span>➡️</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Translations
+        const translations = {
+            en: {
+                'module-badge': 'Module 1 - Lesson 1',
+                'module-title': 'Introduction to phishing',
+                'module-subtitle': 'Learn the fundamentals of phishing attacks, how they work, and why they\'re dangerous for organizations',
+                'progress-text': 'Lesson progress',
+                'section1-title': 'What is phishing?',
+                'section1-content': 'Phishing is a cyberattack that uses deceptive emails, messages, or websites to trick individuals into revealing personal information — like passwords, credit card details, or login credentials.',
+                'example-label': '💡 Example',
+                'section1-example': 'You receive an email that looks like it\'s from your bank, saying your account will be locked unless you click a link. The link leads to a fake website designed to steal your information.',
+                'simulator-label': 'Real-life phishing email simulator',
+                'sim-from': 'security@bankk-alert.com',
+                'sim-subject': 'URGENT: Your Account Will Be Suspended',
+                'sim-body': 'Dear Customer,\n\nWe have detected unusual activity on your account. To prevent suspension, please verify your identity immediately by clicking the link below:\n\nhttp://bankk-verify-account.com/login\n\nIf you do not respond within 24 hours, your account will be permanently locked.\n\nThank you,\nSecurity Team',
+                'section2-title': 'Why it\'s dangerous',
+                'danger-title': 'Critical facts',
+                'danger-fact1': 'Phishing is responsible for over 80% of cyber breaches.',
+                'danger-fact2': 'AI-generated phishing emails are nearly indistinguishable from real ones.',
+                'danger-fact3': 'Even cybersecurity experts can be tricked by realistic messages.',
+                'section2-content': 'Recognizing phishing attempts protects not just your account — but your organization, data, and reputation.',
+                'section3-title': 'Common signs of a phishing email',
+                'signs-title': 'Watch out for these red flags',
+                'sign1': 'Urgent or threatening tone ("Your account will be suspended!")',
+                'sign2': 'Unexpected links or attachments',
+                'sign3': 'Spelling or grammar mistakes',
+                'sign4': 'Sender address doesn\'t match the organization domain',
+                'sign5': 'Requests for personal or financial information',
+                'quiz-title': 'Quick quiz – test your knowledge',
+                'quiz-question': 'You get an email that says "Your PayPal account has been restricted. Click here to restore access." What should you do?',
+                'quiz-option1': 'Ignore and report it as phishing',
+                'quiz-option2': 'Click the link to check your account',
+                'feedback-correct': '✅ Correct!',
+                'feedback-incorrect': '❌ Incorrect',
+                'feedback-correct-text': 'That\'s right! This is a classic phishing attempt. Always verify directly through the official website or app, never through email links.',
+                'feedback-incorrect-text': 'This is actually a phishing email! Never click links in suspicious emails. Always go directly to the official website or contact support.',
+                'btn-home': 'Home page',
+                'btn-next': 'Next lesson'
+            },
+            uz: {
+                'module-badge': '1-modul - 1-dars',
+                'module-title': 'Fishingga kirish',
+                'module-subtitle': 'Fishing hujumlarining asoslarini, ularning ishlash tamoyilini va tashkilotlar uchun xavfli ekanligini o\'rganing',
+                'progress-text': 'Dars jarayoni',
+                'section1-title': 'Fishing nima?',
+                'section1-content': 'Fishing - bu shaxsiy ma\'lumotlarni (parollar, bank karta ma\'lumotlari yoki kirish ma\'lumotlari) o\'g\'irlash uchun aldamchi elektron xatlar, xabarlar yoki veb-saytlardan foydalanadigan kiberhujum.',
+                'example-label': '💡 Misol',
+                'section1-example': 'Siz bankingizdan kelganga o\'xshagan elektron xat olasiz, unda hisobingiz havolani bosmaguningizcha bloklangan bo\'ladi deyiladi. Havola sizning ma\'lumotlaringizni o\'g\'irlash uchun yaratilgan soxta veb-saytga olib boradi.',
+                'simulator-label': 'Haqiqiy fishing xat simulyatori',
+                'sim-from': 'security@bankk-alert.com',
+                'sim-subject': 'SHOSHILINCH: Hisobingiz To\'xtatiladi',
+                'sim-body': 'Hurmatli mijoz,\n\nBiz hisobingizda g\'ayritabiiy faollik aniqladik. To\'xtatishning oldini olish uchun, quyidagi havola orqali shaxsingizni tasdiqlang:\n\nhttp://bankk-verify-account.com/login\n\nAgar 24 soat ichida javob bermasangiz, hisobingiz butunlay bloklangan bo\'ladi.\n\nRahmat,\nXavfsizlik jamoasi',
+                'section2-title': 'Nima uchun xavfli',
+                'danger-title': 'Muhim faktlar',
+                'danger-fact1': 'Fishing kiberxavfsizlik buzilishlarining 80% dan ko\'prog\'iga sabab bo\'ladi.',
+                'danger-fact2': 'AI yaratgan fishing xatlari haqiqiylaridan deyarli farq qilmaydi.',
+                'danger-fact3': 'Hatto kiberxavfsizlik mutaxassislari ham realistik xabarlar tomonidan aldanishi mumkin.',
+                'section2-content': 'Fishing urinishlarini tanish nafaqat hisobingizni, balki tashkilotingiz, ma\'lumotlaringiz va obro\'ingizni ham himoya qiladi.',
+                'section3-title': 'Fishing xatining umumiy belgilari',
+                'signs-title': 'Ushbu xavfli belgilarga e\'tibor bering',
+                'sign1': 'Shoshilinch yoki tahdidli ohang ("Hisobingiz to\'xtatiladi!")',
+                'sign2': 'Kutilmagan havolalar yoki qo\'shimchalar',
+                'sign3': 'Imlo yoki grammatika xatolari',
+                'sign4': 'Jo\'natuvchi manzili tashkilot domeniga mos kelmaydi',
+                'sign5': 'Shaxsiy yoki moliyaviy ma\'lumotlar so\'rovi',
+                'quiz-title': 'Tezkor test – bilimingizni sinab ko\'ring',
+                'quiz-question': 'Sizga "PayPal hisobingiz cheklangan. Kirishni tiklash uchun bu yerni bosing" degan xat keldi. Nima qilishingiz kerak?',
+                'quiz-option1': 'E\'tiborsiz qoldiring va fishing sifatida xabar bering',
+                'quiz-option2': 'Hisobingizni tekshirish uchun havolani bosing',
+                'feedback-correct': '✅ To\'g\'ri!',
+                'feedback-incorrect': '❌ Noto\'g\'ri',
+                'feedback-correct-text': 'To\'g\'ri! Bu klassik fishing urinishi. Har doim rasmiy veb-sayt yoki ilova orqali tekshiring, hech qachon elektron xat havolalari orqali emas.',
+                'feedback-incorrect-text': 'Bu aslida fishing xat! Shubhali xatlardagi havolalarni hech qachon bosmang. Har doim to\'g\'ridan-to\'g\'ri rasmiy veb-saytga o\'ting yoki yordam xizmatiga murojaat qiling.',
+                'btn-home': 'Bosh sahifa',
+                'btn-next': 'Keyingi dars'
+            }
+        };
+
+        // Language seed: Flask session is authoritative; mirror to localStorage for sibling pages
+        const currentLang = '{{ lang }}' || localStorage.getItem('phishguard_lang') || 'en';
+        localStorage.setItem('phishguard_lang', currentLang);
+        let quizAnswered = false;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLanguage();
+            setupQuiz();
+            updateProgress(100);
+        });
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.dataset.translate;
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        function updateProgress(percentage) {
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+            document.getElementById('progressPercentage').textContent = `${percentage}%`;
+        }
+
+        function setupQuiz() {
+            const options = document.querySelectorAll('.quiz-option');
+            
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    if (quizAnswered) return;
+                    
+                    quizAnswered = true;
+                    const answer = option.dataset.answer;
+                    const feedback = document.getElementById('quizFeedback');
+                    const feedbackMessage = feedback.querySelector('.feedback-message');
+                    const feedbackText = feedback.querySelector('.feedback-text');
+                    
+                    // Highlight selected option
+                    options.forEach(opt => {
+                        if (opt.dataset.answer === 'correct') {
+                            opt.classList.add('correct');
+                        }
+                        if (opt === option && answer === 'incorrect') {
+                            opt.classList.add('incorrect');
+                        }
+                    });
+                    
+                    // Show feedback
+                    if (answer === 'correct') {
+                        feedbackMessage.textContent = translations[currentLang]['feedback-correct'];
+                        feedbackMessage.className = 'feedback-message feedback-correct';
+                        feedbackText.textContent = translations[currentLang]['feedback-correct-text'];
+                    } else {
+                        feedbackMessage.textContent = translations[currentLang]['feedback-incorrect'];
+                        feedbackMessage.className = 'feedback-message feedback-incorrect';
+                        feedbackText.textContent = translations[currentLang]['feedback-incorrect-text'];
+                    }
+
+                    feedback.classList.add('show');
+                });
+            });
+        }
+    </script>
+</body>
+</html>

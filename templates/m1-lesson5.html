@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1 - Lesson 5: Final Summary & Quiz - PhishGuard.uz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --bg-gradient-start: #3b82f6;
+            --bg-gradient-end: #2563eb;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-white: #ffffff;
+            --bg-light: #f1f5f9;
+            --border-color: #e2e8f0;
+            --error-red: #dc2626;
+            --success-green: #16a34a;
+            --warning-yellow: #f59e0b;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(37,99,235,0.12);
+            --shadow-lg: 0 20px 40px rgba(37,99,235,0.15);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Header */
+        .module-header {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--success-green), #4ade80);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .module-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .module-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Content */
+        .lesson-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary-blue), #60a5fa);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .recap-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 24px 0;
+        }
+
+        .recap-list li {
+            padding: 16px 20px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            font-size: 15px;
+            line-height: 1.6;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .recap-list li strong {
+            color: var(--primary-blue);
+            min-width: 90px;
+        }
+
+        .intro-text {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 32px;
+        }
+
+        /* Quiz */
+        .quiz-section {
+            margin-top: 40px;
+        }
+
+        .quiz-question {
+            background: var(--bg-light);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .quiz-option {
+            padding: 14px 18px;
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .quiz-option:hover:not(.disabled) {
+            border-color: var(--primary-blue);
+            background: #f0f9ff;
+            transform: translateX(4px);
+        }
+
+        .quiz-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success-green);
+            background: #dcfce7;
+            font-weight: 700;
+        }
+
+        .quiz-option.incorrect {
+            border-color: var(--error-red);
+            background: #fee2e2;
+        }
+
+        .feedback {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: var(--success-green);
+        }
+
+        .feedback.wrong {
+            background: #fee2e2;
+            color: var(--error-red);
+        }
+
+        /* Score */
+        .score-container {
+            text-align: center;
+            margin-top: 32px;
+            padding: 32px;
+            background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+            border-radius: 16px;
+        }
+
+        .submit-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 16px 48px;
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37,99,235,0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .score-display {
+            margin-top: 24px;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        /* Certificate */
+        .certificate {
+            display: none;
+            margin-top: 32px;
+            padding: 40px;
+            background: linear-gradient(135deg, #dcfce7, #86efac);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            animation: slideDown 0.8s ease;
+        }
+
+        .certificate.show {
+            display: block;
+        }
+
+        .certificate-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .certificate-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #166534;
+            margin-bottom: 16px;
+        }
+
+        .certificate-text {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #14532d;
+            margin-bottom: 12px;
+        }
+
+        .certificate-module {
+            font-size: 18px;
+            font-weight: 700;
+            color: #166534;
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-btn-prev {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .nav-btn-prev:hover {
+            background: #e2e8f0;
+            transform: translateX(-4px);
+        }
+
+        .nav-btn-home {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+
+        .nav-btn-home:hover {
+            background: var(--primary-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37,99,235,0.4);
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 16px;
+            }
+
+            .module-header {
+                padding: 24px;
+            }
+
+            .module-title {
+                font-size: 24px;
+            }
+
+            .lesson-content {
+                padding: 24px;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                max-width: 100%;
+            }
+
+            .certificate-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+            <a href="{{ url_for('home') }}" class="btn" style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-decoration: none; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span>Home</span>
+            </a>
+    <!-- Language Switch -->
+    <div class="lang-switch">
+        <a href="{{ url_for('set_lang', lang='en') }}" class="lang-btn {% if lang == 'en' %}active{% endif %}" style="text-decoration:none;display:inline-block;">English</a>
+        <a href="{{ url_for('set_lang', lang='uz') }}" class="lang-btn {% if lang == 'uz' %}active{% endif %}" style="text-decoration:none;display:inline-block;">O'zbek</a>
+    </div>
+
+    <div class="page-container">
+        <!-- Module Header -->
+        <div class="module-header">
+            <div class="module-badge">
+                <span>🎓</span>
+                <span data-translate="module-badge">Module 1 - Lesson 5</span>
+            </div>
+            <h1 class="module-title" data-translate="module-title">Final summary & quiz</h1>
+            <p class="module-subtitle" data-translate="module-subtitle">
+                Test your knowledge and earn your PhishGuard certification
+            </p>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Summary Recap -->
+            <h2 class="section-title">
+                <span class="section-icon">📘</span>
+                <span data-translate="recap-title">Summary recap</span>
+            </h2>
+
+            <ul class="recap-list">
+                <li>
+                    <strong data-translate="lesson1-label">Lesson 1:</strong>
+                    <span data-translate="lesson1-recap">What phishing is and why it's dangerous.</span>
+                </li>
+                <li>
+                    <strong data-translate="lesson2-label">Lesson 2:</strong>
+                    <span data-translate="lesson2-recap">Types of phishing — Email, SMS, and Voice.</span>
+                </li>
+                <li>
+                    <strong data-translate="lesson3-label">Lesson 3:</strong>
+                    <span data-translate="lesson3-recap">How to spot red flags in suspicious messages.</span>
+                </li>
+                <li>
+                    <strong data-translate="lesson4-label">Lesson 4:</strong>
+                    <span data-translate="lesson4-recap">Safe online habits — Do's and Don'ts.</span>
+                </li>
+            </ul>
+
+            <p class="intro-text" data-translate="intro-text">
+                Now let's test your knowledge! Choose the correct answer for each question below. You'll see instant feedback.
+            </p>
+
+            <!-- Quiz Section -->
+            <div class="quiz-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📝</span>
+                    <span data-translate="quiz-title">Knowledge assessment</span>
+                </h2>
+
+                <!-- Question 1 -->
+                <div class="quiz-question">
+                    <p class="question-text" data-translate="q1-text">
+                        <strong>1.</strong> What is the most common sign of a phishing email?
+                    </p>
+                    <div class="quiz-options">
+                        <button type="button" class="quiz-option" onclick="checkAnswer(1, 'a')" data-translate="q1-a">A) A friendly tone</button>
+                        <button type="button" class="quiz-option" onclick="checkAnswer(1, 'b')" data-translate="q1-b">B) Grammar mistakes and fake links</button>
+                        <button type="button" class="quiz-option" onclick="checkAnswer(1, 'c')" data-translate="q1-c">C) Company logo</button>
+                    </div>
+                    <div class="feedback" id="f1"></div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="quiz-question">
+                    <p class="question-text" data-translate="q2-text">
+                        <strong>2.</strong> What should you do when you receive a suspicious email?
+                    </p>
+                    <div class="quiz-options">
+                        <button type="button" class="quiz-option" onclick="checkAnswer(2, 'a')" data-translate="q2-a">A) Forward it to friends</button>
+                        <button type="button" class="quiz-option" onclick="checkAnswer(2, 'b')" data-translate="q2-b">B) Click the link to check</button>
+                        <button type="button" class="quiz-option" onclick="checkAnswer(2, 'c')" data-translate="q2-c">C) Report it to your IT/security team</button>
+                    </div>
+                    <div class="feedback" id="f2"></div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="quiz-question">
+                    <p class="question-text" data-translate="q3-text">
+                        <strong>3.</strong> Which of the following is a safe online habit?
+                    </p>
+                    <div class="quiz-options">
+                        <button type="button" class="quiz-option" onclick="checkAnswer(3, 'a')" data-translate="q3-a">A) Using the same password everywhere</button>
+                        <button type="button" class="quiz-option" onclick="checkAnswer(3, 'b')" data-translate="q3-b">B) Ignoring browser warnings</button>
+                        <button type="button" class="quiz-option" onclick="checkAnswer(3, 'c')" data-translate="q3-c">C) Enabling Multi-Factor Authentication (MFA)</button>
+                    </div>
+                    <div class="feedback" id="f3"></div>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="quiz-question">
+                    <p class="question-text" data-translate="q4-text">
+                        <strong>4.</strong> What should you never do with a phishing message?
+                    </p>
+                    <div class="quiz-options">
+                        <button type="button" class="quiz-option" onclick="checkAnswer(4, 'a')" data-translate="q4-a">A) Reply or provide info</button>
+                        <button type="button" class="quiz-option" onclick="checkAnswer(4, 'b')" data-translate="q4-b">B) Report to IT</button>
+                        <button type="button" class="quiz-option" onclick="checkAnswer(4, 'c')" data-translate="q4-c">C) Delete it after reporting</button>
+                    </div>
+                    <div class="feedback" id="f4"></div>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="quiz-question">
+                    <p class="question-text" data-translate="q5-text">
+                        <strong>5.</strong> Why should you report phishing emails?
+                    </p>
+                    <div class="quiz-options">
+                        <button type="button" class="quiz-option" onclick="checkAnswer(5, 'a')" data-translate="q5-a">A) To stop future attacks</button>
+                        <button type="button" class="quiz-option" onclick="checkAnswer(5, 'b')" data-translate="q5-b">B) For fun</button>
+                        <button type="button" class="quiz-option" onclick="checkAnswer(5, 'c')" data-translate="q5-c">C) To unsubscribe</button>
+                    </div>
+                    <div class="feedback" id="f5"></div>
+                </div>
+            </div>
+
+            <!-- Score Container -->
+            <div class="score-container">
+                <button type="button" class="submit-btn" onclick="showScore()" data-translate="btn-submit">
+                    🏆 Submit quiz
+                </button>
+                <div class="score-display" id="scoreDisplay"></div>
+            </div>
+
+            <!-- Certificate -->
+            <div class="certificate" id="certificate">
+                <div class="certificate-icon">🎓</div>
+                <h2 class="certificate-title" data-translate="cert-title">Congratulations!</h2>
+                <p class="certificate-text" data-translate="cert-text1">
+                    You have successfully completed
+                </p>
+                <p class="certificate-module" data-translate="cert-module">
+                    PhishGuard Awareness Training - Module 1
+                </p>
+                <p class="certificate-text" data-translate="cert-text2">
+                    Keep practicing safe digital habits — and remember: Think Before You Click!
+                </p>
+                <button type="button" class="submit-btn" style="margin-top:20px;" onclick="completeModule(1)" data-translate="btn-complete-module">
+                    ✅ Complete Module 1
+                </button>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <a href="{{ url_for('home') }}" class="nav-btn nav-btn-prev">
+                    <span>⬅️</span>
+                    <span data-translate="btn-prev">Previous lesson</span>
+                </a>
+                <a href="{{ url_for('home') }}" class="nav-btn nav-btn-home">
+                    <span data-translate="btn-home">Back to home</span>
+                    <span>🏠</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translations
+        const translations = {
+            en: {
+                'module-badge': 'Module 1 - Lesson 5',
+                'module-title': 'Final summary & quiz',
+                'module-subtitle': 'Test your knowledge and earn your PhishGuard certification',
+                'recap-title': 'Summary recap',
+                'lesson1-label': 'Lesson 1:',
+                'lesson1-recap': 'What phishing is and why it\'s dangerous.',
+                'lesson2-label': 'Lesson 2:',
+                'lesson2-recap': 'Types of phishing — Email, SMS, and Voice.',
+                'lesson3-label': 'Lesson 3:',
+                'lesson3-recap': 'How to spot red flags in suspicious messages.',
+                'lesson4-label': 'Lesson 4:',
+                'lesson4-recap': 'Safe online habits — Do\'s and Don\'ts.',
+                'intro-text': 'Now let\'s test your knowledge! Choose the correct answer for each question below. You\'ll see instant feedback.',
+                'quiz-title': 'Knowledge assessment',
+                'q1-text': '1. What is the most common sign of a phishing email?',
+                'q1-a': 'A) A friendly tone',
+                'q1-b': 'B) Grammar mistakes and fake links',
+                'q1-c': 'C) Company logo',
+                'q2-text': '2. What should you do when you receive a suspicious email?',
+                'q2-a': 'A) Forward it to friends',
+                'q2-b': 'B) Click the link to check',
+                'q2-c': 'C) Report it to your IT/security team',
+                'q3-text': '3. Which of the following is a safe online habit?',
+                'q3-a': 'A) Using the same password everywhere',
+                'q3-b': 'B) Ignoring browser warnings',
+                'q3-c': 'C) Enabling Multi-Factor Authentication (MFA)',
+                'q4-text': '4. What should you never do with a phishing message?',
+                'q4-a': 'A) Reply or provide info',
+                'q4-b': 'B) Report to IT',
+                'q4-c': 'C) Delete it after reporting',
+                'q5-text': '5. Why should you report phishing emails?',
+                'q5-a': 'A) To stop future attacks',
+                'q5-b': 'B) For fun',
+                'q5-c': 'C) To unsubscribe',
+                'btn-submit': '🏆 Submit quiz',
+                'btn-prev': 'Previous lesson',
+                'btn-home': 'Back to home',
+                'feedback-correct': '✅ Correct!',
+                'feedback-wrong': '❌ Incorrect. Review the lessons for help.',
+                'score-text': 'Your score: {score}/5 ({percent}%)',
+                'score-fail': '❌ You need at least 70% to pass. Try again!',
+                'cert-title': 'Congratulations!',
+                'cert-text1': 'You have successfully completed',
+                'cert-module': 'PhishGuard Awareness Training - Module 1',
+                'cert-text2': 'Keep practicing safe digital habits — and remember: Think Before You Click!',
+                'btn-complete-module': '✅ Complete Module 1'
+            },
+            uz: {
+                'module-badge': '1-modul - 5-dars',
+                'module-title': 'Yakuniy xulosa va test',
+                'module-subtitle': 'Bilimingizni sinab ko\'ring va PhishGuard sertifikatini oling',
+                'recap-title': 'Xulosa takrorlash',
+                'lesson1-label': '1-dars:',
+                'lesson1-recap': 'Fishing nima va nima uchun xavfli.',
+                'lesson2-label': '2-dars:',
+                'lesson2-recap': 'Fishing turlari — Email, SMS va ovozli.',
+                'lesson3-label': '3-dars:',
+                'lesson3-recap': 'Shubhali xabarlarda xavfli belgilarni qanday aniqlash.',
+                'lesson4-label': '4-dars:',
+                'lesson4-recap': 'Xavfsiz onlayn odatlar — Qiling va Qilmang.',
+                'intro-text': 'Endi bilimingizni sinab ko\'raylik! Quyidagi har bir savol uchun to\'g\'ri javobni tanlang. Darhol fikr-mulohaza ko\'rasiz.',
+                'quiz-title': 'Bilim baholash',
+                'q1-text': '1. Fishing elektron xatining eng keng tarqalgan belgisi nima?',
+                'q1-a': 'A) Do\'stona ohang',
+                'q1-b': 'B) Grammatika xatolari va soxta havolalar',
+                'q1-c': 'C) Kompaniya logotipi',
+                'q2-text': '2. Shubhali elektron xat olganda nima qilishingiz kerak?',
+                'q2-a': 'A) Do\'stlaringizga yo\'naltiring',
+                'q2-b': 'B) Tekshirish uchun havolani bosing',
+                'q2-c': 'C) IT/xavfsizlik guruhingizga xabar bering',
+                'q3-text': '3. Quyidagilardan qaysi biri xavfsiz onlayn odat?',
+                'q3-a': 'A) Hamma joyda bir xil paroldan foydalanish',
+                'q3-b': 'B) Brauzer ogohlantirishlarini e\'tiborsiz qoldirish',
+                'q3-c': 'C) Ko\'p faktorli autentifikatsiyani (MFA) yoqish',
+                'q4-text': '4. Fishing xabari bilan hech qachon nima qilmasligingiz kerak?',
+                'q4-a': 'A) Javob berish yoki ma\'lumot berish',
+                'q4-b': 'B) IT ga xabar berish',
+                'q4-c': 'C) Xabar berganingizdan keyin o\'chirish',
+                'q5-text': '5. Nega fishing elektron xatlarini xabar berish kerak?',
+                'q5-a': 'A) Kelajakdagi hujumlarni to\'xtatish uchun',
+                'q5-b': 'B) O\'yin-kulgi uchun',
+                'q5-c': 'C) Obunani bekor qilish uchun',
+                'btn-submit': '🏆 Testni topshirish',
+                'btn-prev': 'Oldingi dars',
+                'btn-home': 'Bosh sahifaga qaytish',
+                'feedback-correct': '✅ To\'g\'ri!',
+                'feedback-wrong': '❌ Noto\'g\'ri. Yordam uchun darslarni ko\'rib chiqing.',
+                'score-text': 'Sizning natijangiz: 5 dan {score} ({percent}%)',
+                'score-fail': '❌ O\'tish uchun kamida 70% kerak. Qaytadan urinib ko\'ring!',
+                'cert-title': 'Tabriklaymiz!',
+                'cert-text1': 'Siz muvaffaqiyatli tugatdingiz',
+                'cert-module': 'PhishGuard xabardorlik ta\'limi - 1-modul',
+                'cert-text2': 'Xavfsiz raqamli odatlarni davom ettiring — va esda tuting: Bosishdan oldin o\'ylab ko\'ring!',
+                'btn-complete-module': '✅ 1-modulni tugallash'
+            }
+        };
+
+        // Language seed: Flask session is authoritative
+        const currentLang = '{{ lang }}' || localStorage.getItem('phishguard_lang') || 'en';
+        localStorage.setItem('phishguard_lang', currentLang);
+        const correctAnswers = { 1: 'b', 2: 'c', 3: 'c', 4: 'a', 5: 'a' };
+        let score = 0;
+        let answered = {};
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLanguage();
+        });
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.dataset.translate;
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        function checkAnswer(q, choice) {
+            const feedback = document.getElementById('f' + q);
+            if (!feedback) return;
+
+            if (answered[q]) return; // Prevent re-answering
+            answered[q] = true;
+
+            // Find the parent question container
+            const question = feedback.closest('.quiz-question') || feedback.parentElement;
+            const options = question.querySelectorAll('.quiz-option');
+
+            // Disable all options
+            options.forEach(opt => opt.classList.add('disabled'));
+
+            // Highlight correct answer green, wrong answer red
+            const correctChoice = correctAnswers[q];
+            options.forEach(opt => {
+                const onclickAttr = opt.getAttribute('onclick');
+                if (onclickAttr) {
+                    const match = onclickAttr.match(/checkAnswer\s*\(\s*\d+\s*,\s*['"]([a-d])['"]\s*\)/);
+                    if (match) {
+                        const optChoice = match[1];
+                        if (optChoice === correctChoice) {
+                            opt.classList.add('correct');
+                        }
+                        if (optChoice === choice && choice !== correctChoice) {
+                            opt.classList.add('incorrect');
+                        }
+                    }
+                }
+            });
+
+            // Show feedback
+            if (choice === correctAnswers[q]) {
+                feedback.textContent = translations[currentLang]['feedback-correct'];
+                feedback.className = 'feedback show correct';
+                score++;
+            } else {
+                feedback.textContent = translations[currentLang]['feedback-wrong'];
+                feedback.className = 'feedback show wrong';
+            }
+
+            // Check if all 5 answered → show score
+            if (Object.keys(answered).length === 5) {
+                setTimeout(() => showScore(), 600);
+            }
+        }
+
+        function showScore() {
+            // Guard: don't show score until all questions are answered
+            if (Object.keys(answered).length < 5) {
+                alert(currentLang === 'uz'
+                    ? 'Barcha 5 savolga javob bering!'
+                    : 'Please answer all 5 questions first!');
+                return;
+            }
+            const total = 5;
+            const percent = Math.round((score / total) * 100);
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const certificate = document.getElementById('certificate');
+
+            let scoreText = translations[currentLang]['score-text']
+                .replace('{score}', score)
+                .replace('{percent}', percent);
+
+            scoreDisplay.textContent = scoreText;
+
+            if (percent >= 70) {
+                fetch('/record-quiz-pass/1', { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+                certificate.classList.add('show');
+                certificate.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                certificate.classList.remove('show');
+                scoreDisplay.textContent += ' — ' + translations[currentLang]['score-fail'];
+            }
+        }
+    
+        function completeModule(module) {
+            fetch('/complete-module/' + module, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirect;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+    </script>
+</body>
+</html>

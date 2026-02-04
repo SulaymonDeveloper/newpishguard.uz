@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - PhishGuard.uz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --bg-gradient-start: #3b82f6;
+            --bg-gradient-end: #2563eb;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-white: #ffffff;
+            --bg-light: #f1f5f9;
+            --border-color: #e2e8f0;
+            --error-red: #dc2626;
+            --success-green: #16a34a;
+            --shadow-lg: 0 20px 40px rgba(37,99,235,0.15);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .login-card {
+            background: var(--bg-white);
+            border-radius: 24px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 660px;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .shield-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .shield-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+
+        .logo-subtitle {
+            font-size: 15px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 15px;
+            font-family: 'Manrope', sans-serif;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-white);
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 4px rgba(37,99,235,0.1);
+        }
+
+        .form-input::placeholder {
+            color: #cbd5e1;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+
+        .toggle-password:hover {
+            color: var(--text-dark);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Manrope', sans-serif;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: block;
+            text-decoration: none;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+            margin-bottom: 12px;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--primary-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37,99,235,0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-admin {
+            background: linear-gradient(135deg, #eff6ff, #dbeafe);
+            color: var(--primary-blue-dark);
+            border: 2px solid #bfdbfe;
+            margin-top: 8px;
+            font-size: 15px;
+            padding: 13px 16px;
+        }
+
+        .btn-admin:hover {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border-color: var(--primary-blue);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(37,99,235,0.2);
+        }
+
+        .error-message, .success-message {
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            display: none;
+            animation: shake 0.4s ease;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: var(--error-red);
+        }
+
+        .success-message {
+            background: #dcfce7;
+            border: 1px solid #86efac;
+            color: var(--success-green);
+        }
+
+        .error-message.show, .success-message.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .lang-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary-blue);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.15);
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .forgot-password a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .forgot-password a:hover {
+            color: var(--primary-blue-dark);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .login-card {
+                padding: 40px 32px;
+            }
+
+            .logo-text {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Language Switch -->
+    <div class="lang-switch">
+        <button class="lang-btn active" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="uz">O'zbek</button>
+    </div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo-container">
+                <div class="shield-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2L4 6V11C4 16.55 7.84 21.74 13 23C18.16 21.74 22 16.55 22 11V6L12 2Z" 
+                              stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(37,99,235,0.1)"/>
+                        <path d="M9 12L11 14L15 10" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h1 class="logo-text" data-translate="app-title">PhishGuard.uz</h1>
+                <p class="logo-subtitle" data-translate="app-subtitle">Phishing awareness training</p>
+            </div>
+
+            <div class="error-message" id="errorMessage">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            {% if category == 'error' %}
+                                <span>{{ message }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <div class="success-message" id="successMessage">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            {% if category == 'success' %}
+                                <span>{{ message }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+            </div>
+
+            <form method="POST" action="{{ url_for('login') }}" id="loginForm">
+                <div class="form-group">
+                    <label class="form-label" for="username" data-translate="label-username">Username</label>
+                    <input 
+                        type="text" 
+                        id="username"
+                        name="username" 
+                        class="form-input" 
+                        placeholder="admin"
+                        value=""
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password" data-translate="label-password">Password</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            id="password"
+                            name="password" 
+                            class="form-input" 
+                            placeholder="••••••••"
+                            required
+                        >
+                        <button type="button" class="toggle-password" id="togglePassword">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="loginBtn" data-translate="btn-login">Login</button>
+                <button type="button" class="btn btn-admin" onclick="enterAsAdmin()" data-translate="btn-admin">🛡️ Enter as Admin</button>
+                <a href="{{ url_for('register') }}" class="btn btn-secondary" style="text-decoration: none; display: block;" data-translate="btn-register">Register new account</a>
+            </form>
+
+            <div class="forgot-password">
+                <a href="#" data-translate="forgot-password">Forgot password?</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        let currentLang = localStorage.getItem('language') || 'en';
+
+        // Translations
+        const translations = {
+            en: {
+                'app-title': 'PhishGuard.uz',
+                'app-subtitle': 'Phishing awareness training',
+                'label-username': 'Username',
+                'label-password': 'Password',
+                'btn-login': 'Login',
+                'btn-register': 'Register new account',
+                'btn-admin': '🛡️ Enter as Admin',
+                'forgot-password': 'Forgot password?'
+            },
+            uz: {
+                'app-title': 'PhishGuard.uz',
+                'app-subtitle': 'Fishing hujumlaridan himoya ta\'limi',
+                'label-username': 'Foydalanuvchi nomi',
+                'label-password': 'Parol',
+                'btn-login': 'Kirish',
+                'btn-register': 'Yangi hisob yaratish',
+                'btn-admin': '🛡️ Admin sifatida kirish',
+                'forgot-password': 'Parolni unutdingizmi?'
+            }
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            initLanguage();
+            setupEventListeners();
+            
+            // Show flash messages
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        const msgEl = document.getElementById('{{ "errorMessage" if category == "error" else "successMessage" }}');
+                        if (msgEl) msgEl.classList.add('show');
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        });
+
+        function initLanguage() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === currentLang);
+            });
+            updateLanguage();
+        }
+
+        function setupEventListeners() {
+            // Language switching
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentLang = btn.dataset.lang;
+                    localStorage.setItem('language', currentLang);
+                    updateLanguage();
+                });
+            });
+
+            // Toggle password visibility
+            document.getElementById('togglePassword').addEventListener('click', togglePasswordVisibility);
+
+            
+        }
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.dataset.translate;
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleBtn = document.getElementById('togglePassword');
+            const svg = toggleBtn.querySelector('svg');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                svg.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+            } else {
+                passwordInput.type = 'password';
+                svg.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+            }
+        }
+        function enterAsAdmin() {
+            document.getElementById('username').value = 'admin';
+            document.getElementById('password').focus();
+        }
+    </script>

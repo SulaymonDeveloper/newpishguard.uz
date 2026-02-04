@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2 - Lesson 2: Telegram Bots Phishing - PhishGuard.uz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --bg-gradient-start: #3b82f6;
+            --bg-gradient-end: #2563eb;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-white: #ffffff;
+            --bg-light: #f1f5f9;
+            --border-color: #e2e8f0;
+            --error-red: #dc2626;
+            --success-green: #16a34a;
+            --warning-yellow: #f59e0b;
+            --telegram-blue: #0088cc;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(37,99,235,0.12);
+            --shadow-lg: 0 20px 40px rgba(37,99,235,0.15);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Header */
+        .module-header {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--telegram-blue), #3aa7e8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .module-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .module-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .progress-percentage {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .progress-bar {
+            background: var(--bg-light);
+            height: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--telegram-blue), #3aa7e8);
+            width: 0%;
+            transition: width 0.6s ease;
+            border-radius: 8px;
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+        }
+
+        .lesson-section {
+            margin-bottom: 40px;
+        }
+
+        .lesson-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--telegram-blue), #3aa7e8);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .section-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .info-list li {
+            padding: 12px 16px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-size: 15px;
+            line-height: 1.6;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .info-list li::before {
+            content: '•';
+            color: var(--telegram-blue);
+            font-weight: 700;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .info-list li strong {
+            color: var(--telegram-blue);
+        }
+
+        /* Simulation Section */
+        .simulation-section {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 40px;
+        }
+
+        .simulation-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 16px;
+        }
+
+        .simulation-instruction {
+            color: #78350f;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .bot-example {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .bot-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .bot-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--telegram-blue), #3aa7e8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .bot-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--telegram-blue);
+        }
+
+        .bot-message {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            padding: 12px;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .bot-link {
+            color: var(--telegram-blue);
+            text-decoration: underline;
+        }
+
+        .bot-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .bot-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 20px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .bot-btn.safe {
+            background: white;
+            border-color: var(--success-green);
+            color: var(--success-green);
+        }
+
+        .bot-btn.safe:hover:not(.disabled) {
+            background: var(--success-green);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .bot-btn.danger {
+            background: white;
+            border-color: var(--error-red);
+            color: var(--error-red);
+        }
+
+        .bot-btn.danger:hover:not(.disabled) {
+            background: var(--error-red);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .bot-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .feedback {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: var(--success-green);
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            color: var(--error-red);
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-btn-prev {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .nav-btn-prev:hover {
+            background: #e2e8f0;
+            transform: translateX(-4px);
+        }
+
+        .nav-btn-next {
+            background: var(--telegram-blue);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
+        }
+
+        .nav-btn-next:hover {
+            background: #0077b5;
+            transform: translateX(4px);
+            box-shadow: 0 6px 20px rgba(0, 136, 204, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 16px;
+            }
+
+            .module-header {
+                padding: 24px;
+            }
+
+            .module-title {
+                font-size: 24px;
+            }
+
+            .lesson-content {
+                padding: 24px;
+            }
+
+            .simulation-section {
+                padding: 24px;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                max-width: 100%;
+            }
+
+            .bot-buttons {
+                flex-direction: column;
+            }
+
+            .bot-btn {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+            <a href="{{ url_for('home') }}" class="btn" style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-decoration: none; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span>Home</span>
+            </a>
+    <!-- Language Switch -->
+    <div class="lang-switch">
+        <button class="lang-btn active" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="uz">O'zbek</button>
+    </div>
+
+    <div class="page-container">
+        <!-- Module Header -->
+        <div class="module-header">
+            <div class="module-badge">
+                <span>🤖</span>
+                <span data-translate="module-badge">Module 2 - Lesson 2</span>
+            </div>
+            <h1 class="module-title" data-translate="module-title">Telegram bots used for phishing</h1>
+            <p class="module-subtitle" data-translate="module-subtitle">
+                Learn how fake bots lure users with fraudulent offers and steal personal data
+            </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-label">
+                <span class="progress-text" data-translate="progress-text">Lesson progress</span>
+                <span class="progress-percentage" id="progressPercentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Overview -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📖</span>
+                    <span data-translate="overview-title">Overview</span>
+                </h2>
+                <p class="section-content" data-translate="overview-text">
+                    Cybercriminals often use fake Telegram bots to lure users with offers such as "Telegram Premium", free mobile data, job opportunities, or gifts. These phishing bots are designed to appear legitimate, using convincing names and Telegram icons.
+                </p>
+            </div>
+
+            <!-- How It Works -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">⚙️</span>
+                    <span data-translate="how-title">How it works</span>
+                </h2>
+                <ul class="info-list">
+                    <li>
+                        <span data-translate="how-item1">Bots pretending to offer free <strong>Telegram Premium</strong> or prizes.</span>
+                    </li>
+                    <li>
+                        <span data-translate="how-item2">Fake bots requesting your <strong>login credentials, OTP codes, or phone number</strong>.</span>
+                    </li>
+                    <li>
+                        <span data-translate="how-item3">Links disguised through <strong>t.me shorteners</strong> or bot redirecting tricks.</span>
+                    </li>
+                    <li>
+                        <span data-translate="how-item4">Users are tricked into giving access tokens or login codes to hackers.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Simulation Section -->
+            <div class="simulation-section">
+                <div class="simulation-title">
+                    <span>🧪</span>
+                    <span data-translate="simulation-title">Simulation: chat with a suspicious bot</span>
+                </div>
+                <p class="simulation-instruction" data-translate="simulation-instruction">
+                    Choose the safest action when interacting with these fake Telegram bots:
+                </p>
+
+                <!-- Bot 1 -->
+                <div class="bot-example" id="bot1">
+                    <div class="bot-header">
+                        <div class="bot-icon">🎁</div>
+                        <div class="bot-name">@TelePremiumGiftBot</div>
+                    </div>
+                    <div class="bot-message" data-translate="bot1-message">
+                        🎉 Congratulations! You've been selected for free Telegram Premium! Please enter your phone number to activate.
+                    </div>
+                    <div class="bot-buttons">
+                        <button class="bot-btn safe" onclick="respondToBot(1, true)" data-translate="bot1-safe">
+                            Ignore and report bot
+                        </button>
+                        <button class="bot-btn danger" onclick="respondToBot(1, false)" data-translate="bot1-danger">
+                            Enter phone number
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback1"></div>
+                </div>
+
+                <!-- Bot 2 -->
+                <div class="bot-example" id="bot2">
+                    <div class="bot-header">
+                        <div class="bot-icon">🚀</div>
+                        <div class="bot-name">@FreeDataOfferBot</div>
+                    </div>
+                    <div class="bot-message">
+                        <span data-translate="bot2-message">🚀 Claim 10GB of free mobile data now! Click </span>
+                        <span class="bot-link">t.me/freedata</span>
+                        <span data-translate="bot2-message2"> to activate.</span>
+                    </div>
+                    <div class="bot-buttons">
+                        <button class="bot-btn safe" onclick="respondToBot(2, true)" data-translate="bot2-safe">
+                            Avoid clicking and verify from official Telegram site
+                        </button>
+                        <button class="bot-btn danger" onclick="respondToBot(2, false)" data-translate="bot2-danger">
+                            Click the link
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback2"></div>
+                </div>
+
+                <!-- Bot 3 -->
+                <div class="bot-example" id="bot3">
+                    <div class="bot-header">
+                        <div class="bot-icon">💼</div>
+                        <div class="bot-name">@JobPortalBot</div>
+                    </div>
+                    <div class="bot-message" data-translate="bot3-message">
+                        💼 We're hiring remote workers! Please verify your Telegram login code to proceed.
+                    </div>
+                    <div class="bot-buttons">
+                        <button class="bot-btn safe" onclick="respondToBot(3, true)" data-translate="bot3-safe">
+                            Refuse to share code and exit chat
+                        </button>
+                        <button class="bot-btn danger" onclick="respondToBot(3, false)" data-translate="bot3-danger">
+                            Send verification code
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback3"></div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <a href="{{ url_for('lesson', module=2, lesson=1) }}" class="nav-btn nav-btn-prev">
+                    <span>⬅️</span>
+                    <span data-translate="btn-prev">Previous lesson</span>
+                </a>
+                <a href="{{ url_for('lesson', module=2, lesson=3) }}" class="nav-btn nav-btn-next">
+                    <span data-translate="btn-next">Next lesson</span>
+                    <span>➡️</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translations
+        const translations = {
+            en: {
+                'module-badge': 'Module 2 - Lesson 2',
+                'module-title': 'Telegram bots used for phishing',
+                'module-subtitle': 'Learn how fake bots lure users with fraudulent offers and steal personal data',
+                'progress-text': 'Lesson progress',
+                'overview-title': 'Overview',
+                'overview-text': 'Cybercriminals often use fake Telegram bots to lure users with offers such as "Telegram Premium", free mobile data, job opportunities, or gifts. These phishing bots are designed to appear legitimate, using convincing names and Telegram icons.',
+                'how-title': 'How it works',
+                'how-item1': 'Bots pretending to offer free Telegram Premium or prizes.',
+                'how-item2': 'Fake bots requesting your login credentials, OTP codes, or phone number.',
+                'how-item3': 'Links disguised through t.me shorteners or bot redirecting tricks.',
+                'how-item4': 'Users are tricked into giving access tokens or login codes to hackers.',
+                'simulation-title': 'Simulation: chat with a suspicious bot',
+                'simulation-instruction': 'Choose the safest action when interacting with these fake Telegram bots:',
+                'bot1-message': '🎉 Congratulations! You\'ve been selected for free Telegram Premium! Please enter your phone number to activate.',
+                'bot1-safe': 'Ignore and report bot',
+                'bot1-danger': 'Enter phone number',
+                'bot2-message': '🚀 Claim 10GB of free mobile data now! Click ',
+                'bot2-message2': ' to activate.',
+                'bot2-safe': 'Avoid clicking and verify from official Telegram site',
+                'bot2-danger': 'Click the link',
+                'bot3-message': '💼 We\'re hiring remote workers! Please verify your Telegram login code to proceed.',
+                'bot3-safe': 'Refuse to share code and exit chat',
+                'bot3-danger': 'Send verification code',
+                'btn-prev': 'Previous lesson',
+                'btn-next': 'Next lesson',
+                'alert-correct': '✅ Correct! Always verify official sources and never share private data with bots.',
+                'alert-incorrect': '⚠️ Incorrect. This is a common phishing trick — bots that ask for codes or personal details are fake.'
+            },
+            uz: {
+                'module-badge': '2-modul - 2-dars',
+                'module-title': 'Fishing uchun ishlatiladigan Telegram botlar',
+                'module-subtitle': 'Soxta botlar foydalanuvchilarni firibgar takliflar bilan qanday aldab, shaxsiy ma\'lumotlarni o\'g\'irlashini bilib oling',
+                'progress-text': 'Dars jarayoni',
+                'overview-title': 'Umumiy ko\'rinish',
+                'overview-text': 'Kiberjinoyatchilar ko\'pincha "Telegram Premium", bepul mobil internet, ish imkoniyatlari yoki sovg\'alar kabi takliflar bilan foydalanuvchilarni aldash uchun soxta Telegram botlaridan foydalanadilar. Ushbu fishing botlari ishonchli ko\'rinish uchun qonuniy nomlar va Telegram belgilaridan foydalanadilar.',
+                'how-title': 'Bu qanday ishlaydi',
+                'how-item1': 'Bepul Telegram Premium yoki sovrinlar taklif qiluvchi botlar.',
+                'how-item2': 'Kirish ma\'lumotlaringiz, OTP kodlari yoki telefon raqamingizni so\'rovchi soxta botlar.',
+                'how-item3': 't.me qisqartiruvchilari yoki bot yo\'naltirish hiyla-nayranglari orqali yashirilgan havolalar.',
+                'how-item4': 'Foydalanuvchilar xakerga kirish tokenlari yoki kirish kodlarini berishga aldanadilar.',
+                'simulation-title': 'Simulyatsiya: shubhali bot bilan suhbat',
+                'simulation-instruction': 'Ushbu soxta Telegram botlar bilan muloqot qilishda eng xavfsiz harakatni tanlang:',
+                'bot1-message': '🎉 Tabriklaymiz! Siz bepul Telegram Premium uchun tanlangansiz! Faollashtirish uchun telefon raqamingizni kiriting.',
+                'bot1-safe': 'E\'tiborsiz qoldirish va botni xabar berish',
+                'bot1-danger': 'Telefon raqamini kiriting',
+                'bot2-message': '🚀 Hozir 10GB bepul mobil internetni oling! ',
+                'bot2-message2': ' faollashtirish uchun bosing.',
+                'bot2-safe': 'Bosishdan saqlaning va rasmiy Telegram saytidan tekshiring',
+                'bot2-danger': 'Havolani bosing',
+                'bot3-message': '💼 Biz masofaviy xodimlarni ishga olmoqdamiz! Davom ettirish uchun Telegram kirish kodingizni tasdiqlang.',
+                'bot3-safe': 'Kodni ulashishdan bosh tortish va suhbatdan chiqish',
+                'bot3-danger': 'Tasdiqlash kodini yuborish',
+                'btn-prev': 'Oldingi dars',
+                'btn-next': 'Keyingi dars',
+                'alert-correct': '✅ To\'g\'ri! Har doim rasmiy manbalarni tekshiring va hech qachon botlar bilan shaxsiy ma\'lumotlarni almashing.',
+                'alert-incorrect': '⚠️ Noto\'g\'ri. Bu keng tarqalgan fishing hiylasi — kodlar yoki shaxsiy ma\'lumotlarni so\'rovchi botlar soxta.'
+            }
+        };
+
+        let currentLang = localStorage.getItem('language') || 'en';
+        const answeredBots = new Set();
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.lang === currentLang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            updateLanguage();
+            
+            initLanguage();
+            updateProgress(100);
+        });
+
+        function initLanguage() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === currentLang);
+            });
+            updateLanguage();
+        }
+
+        // Language switching
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentLang = btn.dataset.lang;
+                localStorage.setItem('language', currentLang);
+                updateLanguage();
+            });
+        });
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.dataset.translate;
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        function updateProgress(percentage) {
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+            document.getElementById('progressPercentage').textContent = `${percentage}%`;
+        }
+
+        function respondToBot(botNum, isCorrect) {
+            if (answeredBots.has(botNum)) return;
+
+            answeredBots.add(botNum);
+            const botBox = document.getElementById('bot' + botNum);
+            const buttons = botBox.querySelectorAll('.bot-btn');
+            const feedback = document.getElementById('feedback' + botNum);
+
+            // Disable buttons
+            buttons.forEach(btn => btn.classList.add('disabled'));
+
+            // Show feedback below the question
+            if (isCorrect) {
+                feedback.textContent = translations[currentLang]['alert-correct'];
+                feedback.className = 'feedback show correct';
+            } else {
+                feedback.textContent = translations[currentLang]['alert-incorrect'];
+                feedback.className = 'feedback show incorrect';
+            }
+        }
+    </script>
+</body>
+</html>

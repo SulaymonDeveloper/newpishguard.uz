@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2 - Lesson 5: Email Phishing in Uzbekistan - PhishGuard.uz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --bg-gradient-start: #3b82f6;
+            --bg-gradient-end: #2563eb;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-white: #ffffff;
+            --bg-light: #f1f5f9;
+            --border-color: #e2e8f0;
+            --error-red: #dc2626;
+            --success-green: #16a34a;
+            --warning-yellow: #f59e0b;
+            --telegram-blue: #0088cc;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(37,99,235,0.12);
+            --shadow-lg: 0 20px 40px rgba(37,99,235,0.15);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Header */
+        .module-header {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--telegram-blue), #3aa7e8);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .module-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .module-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .progress-percentage {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .progress-bar {
+            background: var(--bg-light);
+            height: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--telegram-blue), #3aa7e8);
+            width: 0%;
+            transition: width 0.6s ease;
+            border-radius: 8px;
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+        }
+
+        .lesson-section {
+            margin-bottom: 40px;
+        }
+
+        .lesson-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--telegram-blue), #3aa7e8);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .section-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        .section-content strong {
+            color: var(--telegram-blue);
+        }
+
+        .info-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .info-list li {
+            padding: 12px 16px;
+            background: var(--bg-light);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-size: 15px;
+            line-height: 1.6;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .info-list li::before {
+            flex-shrink: 0;
+        }
+
+        .info-list.scenarios li::before {
+            content: '📧';
+        }
+
+        .info-list.verify li::before {
+            content: '✅';
+        }
+
+        .info-list li strong {
+            color: var(--telegram-blue);
+        }
+
+        /* Activity Section */
+        .activity-section {
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 40px;
+        }
+
+        .activity-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #0c4a6e;
+            margin-bottom: 16px;
+        }
+
+        .activity-instruction {
+            color: #075985;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .email-example {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .email-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .email-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .email-link {
+            color: var(--telegram-blue);
+            text-decoration: underline;
+        }
+
+        .email-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .email-btn {
+            flex: 1;
+            min-width: 140px;
+            padding: 12px 20px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .email-btn.phishing {
+            background: white;
+            border-color: var(--error-red);
+            color: var(--error-red);
+        }
+
+        .email-btn.phishing:hover:not(.disabled) {
+            background: var(--error-red);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .email-btn.safe {
+            background: white;
+            border-color: var(--success-green);
+            color: var(--success-green);
+        }
+
+        .email-btn.safe:hover:not(.disabled) {
+            background: var(--success-green);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .email-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .feedback {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: var(--success-green);
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            color: var(--error-red);
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-btn-prev {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .nav-btn-prev:hover {
+            background: #e2e8f0;
+            transform: translateX(-4px);
+        }
+
+        .nav-btn-next {
+            background: var(--telegram-blue);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
+        }
+
+        .nav-btn-next:hover {
+            background: #0077b5;
+            transform: translateX(4px);
+            box-shadow: 0 6px 20px rgba(0, 136, 204, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 16px;
+            }
+
+            .module-header {
+                padding: 24px;
+            }
+
+            .module-title {
+                font-size: 24px;
+            }
+
+            .lesson-content {
+                padding: 24px;
+            }
+
+            .activity-section {
+                padding: 24px;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                max-width: 100%;
+            }
+
+            .email-buttons {
+                flex-direction: column;
+            }
+
+            .email-btn {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+            <a href="{{ url_for('home') }}" class="btn" style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-decoration: none; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span>Home</span>
+            </a>
+    <!-- Language Switch -->
+    <div class="lang-switch">
+        <button class="lang-btn active" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="uz">O'zbek</button>
+    </div>
+
+    <div class="page-container">
+        <!-- Module Header -->
+        <div class="module-header">
+            <div class="module-badge">
+                <span>📧</span>
+                <span data-translate="module-badge">Module 2 - Lesson 5</span>
+            </div>
+            <h1 class="module-title" data-translate="module-title">Email-based phishing in Uzbekistan</h1>
+            <p class="module-subtitle" data-translate="module-subtitle">
+                Learn to identify phishing emails targeting Uzbek citizens from fake government and banking sources
+            </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-label">
+                <span class="progress-text" data-translate="progress-text">Lesson progress</span>
+                <span class="progress-percentage" id="progressPercentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Overview -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">📖</span>
+                    <span data-translate="overview-title">Overview</span>
+                </h2>
+                <p class="section-content" data-translate="overview-text">
+                    In Uzbekistan, phishing attacks via email often target citizens with fake messages claiming to be from government agencies, banks, or tax authorities. These emails promise compensation, tax refunds, or account updates, but contain <strong>malicious attachments</strong> or <strong>fake website links</strong> that steal personal data.
+                </p>
+            </div>
+
+            <!-- Common Scenarios -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">⚠️</span>
+                    <span data-translate="scenarios-title">Common scenarios</span>
+                </h2>
+                <ul class="info-list scenarios">
+                    <li data-translate="scenario1">
+                        Emails about "government compensation" from fake domains like gov-uz.support.
+                    </li>
+                    <li data-translate="scenario2">
+                        Fake bank updates asking users to log in or verify information.
+                    </li>
+                    <li data-translate="scenario3">
+                        Tax refund notifications with attached Excel or PDF files containing malware.
+                    </li>
+                </ul>
+            </div>
+
+            <!-- How to Verify -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">🔍</span>
+                    <span data-translate="verify-title">How to verify email authenticity</span>
+                </h2>
+                <ul class="info-list verify">
+                    <li data-translate="verify1">
+                        Check the sender's real email address — not just the display name.
+                    </li>
+                    <li>
+                        <span data-translate="verify2">Inspect <strong>email headers</strong> to trace the true source of the message.</span>
+                    </li>
+                    <li data-translate="verify3">
+                        Never open attachments or click links unless the source is verified.
+                    </li>
+                    <li data-translate="verify4">
+                        Contact the institution directly using official contact info, not the one in the suspicious email.
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Activity Section -->
+            <div class="activity-section">
+                <div class="activity-title">
+                    <span>🧩</span>
+                    <span data-translate="activity-title">Mini activity: phishing or not?</span>
+                </div>
+                <p class="activity-instruction" data-translate="activity-instruction">
+                    Examine the examples below and decide if the email is legitimate or phishing.
+                </p>
+
+                <!-- Email 1 -->
+                <div class="email-example" id="email1">
+                    <p class="email-label" data-translate="email1-label">Email 1:</p>
+                    <p class="email-text">
+                        <span data-translate="email1-text">"You have received 1,500,000 UZS compensation from the Ministry of Finance. Click here to claim: </span>
+                        <span class="email-link">gov-uz-support.site</span><span>"</span>
+                    </p>
+                    <div class="email-buttons">
+                        <button class="email-btn phishing" onclick="checkEmail(1, true)" data-translate="btn-phishing">
+                            Phishing
+                        </button>
+                        <button class="email-btn safe" onclick="checkEmail(1, false)" data-translate="btn-safe">
+                            Not phishing
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback1"></div>
+                </div>
+
+                <!-- Email 2 -->
+                <div class="email-example" id="email2">
+                    <p class="email-label" data-translate="email2-label">Email 2:</p>
+                    <p class="email-text">
+                        <span data-translate="email2-text">"Your Hamkorbank account has been temporarily locked. Please log in to verify: </span>
+                        <span class="email-link">hamkor-login.net</span><span>"</span>
+                    </p>
+                    <div class="email-buttons">
+                        <button class="email-btn phishing" onclick="checkEmail(2, true)" data-translate="btn-phishing">
+                            Phishing
+                        </button>
+                        <button class="email-btn safe" onclick="checkEmail(2, false)" data-translate="btn-safe">
+                            Not phishing
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback2"></div>
+                </div>
+
+                <!-- Email 3 -->
+                <div class="email-example" id="email3">
+                    <p class="email-label" data-translate="email3-label">Email 3:</p>
+                    <p class="email-text">
+                        <span data-translate="email3-text">"Official announcement from the Tax Committee: Tax filing deadline extended. More info at </span>
+                        <span class="email-link">soliq.uz</span><span>"</span>
+                    </p>
+                    <div class="email-buttons">
+                        <button class="email-btn phishing" onclick="checkEmail(3, false)" data-translate="btn-phishing">
+                            Phishing
+                        </button>
+                        <button class="email-btn safe" onclick="checkEmail(3, true)" data-translate="btn-safe">
+                            Not phishing
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback3"></div>
+                </div>
+
+                <!-- Email 4 -->
+                <div class="email-example" id="email4">
+                    <p class="email-label" data-translate="email4-label">Email 4:</p>
+                    <p class="email-text" data-translate="email4-text">
+                        "You have received an important security update. Download attached file 'update.pdf' immediately."
+                    </p>
+                    <div class="email-buttons">
+                        <button class="email-btn phishing" onclick="checkEmail(4, true)" data-translate="btn-phishing">
+                            Phishing
+                        </button>
+                        <button class="email-btn safe" onclick="checkEmail(4, false)" data-translate="btn-safe">
+                            Not phishing
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback4"></div>
+                </div>
+
+                <!-- Email 5 -->
+                <div class="email-example" id="email5">
+                    <p class="email-label" data-translate="email5-label">Email 5:</p>
+                    <p class="email-text">
+                        <span data-translate="email5-text">"From Ministry of ICT: Reminder to renew your digital ID. Visit </span>
+                        <span class="email-link">id.egov.uz</span><span>"</span>
+                    </p>
+                    <div class="email-buttons">
+                        <button class="email-btn phishing" onclick="checkEmail(5, false)" data-translate="btn-phishing">
+                            Phishing
+                        </button>
+                        <button class="email-btn safe" onclick="checkEmail(5, true)" data-translate="btn-safe">
+                            Not phishing
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback5"></div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <a href="{{ url_for('lesson', module=2, lesson=4) }}" class="nav-btn nav-btn-prev">
+                    <span>⬅️</span>
+                    <span data-translate="btn-prev">Previous lesson</span>
+                </a>
+                <a href="{{ url_for('lesson', module=2, lesson=6) }}" class="nav-btn nav-btn-next">
+                    <span data-translate="btn-next">Next lesson</span>
+                    <span>➡️</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translations
+        const translations = {
+            en: {
+                'module-badge': 'Module 2 - Lesson 5',
+                'module-title': 'Email-based phishing in Uzbekistan',
+                'module-subtitle': 'Learn to identify phishing emails targeting Uzbek citizens from fake government and banking sources',
+                'progress-text': 'Lesson progress',
+                'overview-title': 'Overview',
+                'overview-text': 'In Uzbekistan, phishing attacks via email often target citizens with fake messages claiming to be from government agencies, banks, or tax authorities. These emails promise compensation, tax refunds, or account updates, but contain malicious attachments or fake website links that steal personal data.',
+                'scenarios-title': 'Common scenarios',
+                'scenario1': 'Emails about "government compensation" from fake domains like gov-uz.support.',
+                'scenario2': 'Fake bank updates asking users to log in or verify information.',
+                'scenario3': 'Tax refund notifications with attached Excel or PDF files containing malware.',
+                'verify-title': 'How to verify email authenticity',
+                'verify1': 'Check the sender\'s real email address — not just the display name.',
+                'verify2': 'Inspect email headers to trace the true source of the message.',
+                'verify3': 'Never open attachments or click links unless the source is verified.',
+                'verify4': 'Contact the institution directly using official contact info, not the one in the suspicious email.',
+                'activity-title': 'Mini activity: phishing or not?',
+                'activity-instruction': 'Examine the examples below and decide if the email is legitimate or phishing.',
+                'email1-label': 'Email 1:',
+                'email1-text': '"You have received 1,500,000 UZS compensation from the Ministry of Finance. Click here to claim: ',
+                'email2-label': 'Email 2:',
+                'email2-text': '"Your Hamkorbank account has been temporarily locked. Please log in to verify: ',
+                'email3-label': 'Email 3:',
+                'email3-text': '"Official announcement from the Tax Committee: Tax filing deadline extended. More info at ',
+                'email4-label': 'Email 4:',
+                'email4-text': '"You have received an important security update. Download attached file \'update.pdf\' immediately."',
+                'email5-label': 'Email 5:',
+                'email5-text': '"From Ministry of ICT: Reminder to renew your digital ID. Visit ',
+                'btn-phishing': 'Phishing',
+                'btn-safe': 'Not phishing',
+                'btn-prev': 'Previous lesson',
+                'btn-next': 'Next lesson',
+                'feedback-correct': '✅ Correct! You successfully identified the phishing attempt.',
+                'feedback-incorrect': '⚠️ Incorrect. Always double-check sender authenticity and URLs before clicking links.'
+            },
+            uz: {
+                'module-badge': '2-modul - 5-dars',
+                'module-title': 'O\'zbekistonda elektron pochta orqali fishing',
+                'module-subtitle': 'Soxta davlat va bank manbalaridan O\'zbekiston fuqarolariga qaratilgan fishing elektron xatlarini aniqlashni o\'rganing',
+                'progress-text': 'Dars jarayoni',
+                'overview-title': 'Umumiy ko\'rinish',
+                'overview-text': 'O\'zbekistonda elektron pochta orqali fishing hujumlari ko\'pincha fuqarolarni davlat idoralari, banklar yoki soliq organlari nomidan keladigan soxta xabarlar bilan nishonga oladi. Bu elektron xatlar kompensatsiya, soliq qaytarmalari yoki hisob yangilanishlarini va\'da qiladi, lekin shaxsiy ma\'lumotlarni o\'g\'irlaydigan zararli qo\'shimchalar yoki soxta veb-sayt havolalarini o\'z ichiga oladi.',
+                'scenarios-title': 'Keng tarqalgan stsenariylar',
+                'scenario1': 'gov-uz.support kabi soxta domenlardan "davlat kompensatsiyasi" haqida elektron xatlar.',
+                'scenario2': 'Foydalanuvchilardan tizimga kirishni yoki ma\'lumotlarni tasdiqlashni so\'rovchi soxta bank yangilanishlari.',
+                'scenario3': 'Zararli dasturlar mavjud Excel yoki PDF fayllari qo\'shilgan soliq qaytarish xabarlari.',
+                'verify-title': 'Elektron xat haqiqiyligini qanday tekshirish',
+                'verify1': 'Jo\'natuvchining haqiqiy elektron pochta manzilini tekshiring — faqat ko\'rsatiladigan nomni emas.',
+                'verify2': 'Xabarning haqiqiy manbasini aniqlash uchun elektron pochta sarlavhalarini tekshiring.',
+                'verify3': 'Manba tasdiqlanmagunga qadar qo\'shimchalarni ochmang yoki havolalarni bosmang.',
+                'verify4': 'Shubhali elektron xatdagi ma\'lumotlardan emas, balki rasmiy aloqa ma\'lumotlaridan foydalangan holda muassasa bilan to\'g\'ridan-to\'g\'ri bog\'laning.',
+                'activity-title': 'Mini faoliyat: fishing yoki yo\'qmi?',
+                'activity-instruction': 'Quyidagi misollarni ko\'rib chiqing va elektron xat qonuniy yoki fishing ekanligini hal qiling.',
+                'email1-label': '1-xat:',
+                'email1-text': '"Siz Moliya vazirligidan 1,500,000 so\'m kompensatsiya oldingiz. Olish uchun bu yerni bosing: ',
+                'email2-label': '2-xat:',
+                'email2-text': '"Hamkorbank hisobingiz vaqtincha bloklandi. Tasdiqlash uchun tizimga kiring: ',
+                'email3-label': '3-xat:',
+                'email3-text': '"Soliq qo\'mitasidan rasmiy e\'lon: Soliq deklaratsiyasini topshirish muddati uzaytirildi. Batafsil ma\'lumot: ',
+                'email4-label': '4-xat:',
+                'email4-text': '"Siz muhim xavfsizlik yangilanishini oldingiz. \'update.pdf\' qo\'shma faylini zudlik bilan yuklab oling."',
+                'email5-label': '5-xat:',
+                'email5-text': '"AKT vazirligidan: Raqamli ID-ni yangilash eslatmasi. Tashrif buyuring: ',
+                'btn-phishing': 'Fishing',
+                'btn-safe': 'Fishing emas',
+                'btn-prev': 'Oldingi dars',
+                'btn-next': 'Keyingi dars',
+                'feedback-correct': '✅ To\'g\'ri! Siz fishing urinishini muvaffaqiyatli aniqladingiz.',
+                'feedback-incorrect': '⚠️ Noto\'g\'ri. Havolalarni bosishdan oldin har doim jo\'natuvchi haqiqiyligi va URL manzillarini ikki marta tekshiring.'
+            }
+        };
+
+        let currentLang = localStorage.getItem('language') || 'en';
+        const answeredEmails = new Set();
+        
+        // Email 1, 2, 4 are phishing (true), Email 3, 5 are not phishing (false)
+        const correctAnswers = {
+            1: true,
+            2: true,
+            3: true,
+            4: true,
+            5: true
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.lang === currentLang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            updateLanguage();
+            
+            initLanguage();
+            updateProgress(100);
+        });
+
+        function initLanguage() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === currentLang);
+            });
+            updateLanguage();
+        }
+
+        // Language switching
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentLang = btn.dataset.lang;
+                localStorage.setItem('language', currentLang);
+                updateLanguage();
+            });
+        });
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.dataset.translate;
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        function updateProgress(percentage) {
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+            document.getElementById('progressPercentage').textContent = `${percentage}%`;
+        }
+
+        function checkEmail(emailNum, isCorrect) {
+            if (answeredEmails.has(emailNum)) return;
+
+            answeredEmails.add(emailNum);
+            const emailBox = document.getElementById('email' + emailNum);
+            const buttons = emailBox.querySelectorAll('.email-btn');
+            const feedback = document.getElementById('feedback' + emailNum);
+
+            // Disable buttons
+            buttons.forEach(btn => btn.classList.add('disabled'));
+
+            // Show feedback
+            if (isCorrect) {
+                feedback.textContent = translations[currentLang]['feedback-correct'];
+                feedback.className = 'feedback show correct';
+            } else {
+                feedback.textContent = translations[currentLang]['feedback-incorrect'];
+                feedback.className = 'feedback show incorrect';
+            }
+        }
+    </script>
+</body>
+</html>

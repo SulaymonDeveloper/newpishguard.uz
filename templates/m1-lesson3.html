@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1 - Lesson 3: Spotting Red Flags - PhishGuard.uz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --bg-gradient-start: #3b82f6;
+            --bg-gradient-end: #2563eb;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-white: #ffffff;
+            --bg-light: #f1f5f9;
+            --border-color: #e2e8f0;
+            --error-red: #dc2626;
+            --success-green: #16a34a;
+            --warning-yellow: #f59e0b;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(37,99,235,0.12);
+            --shadow-lg: 0 20px 40px rgba(37,99,235,0.15);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Header */
+        .module-header {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--primary-blue), #60a5fa);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .module-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .module-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .progress-percentage {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .progress-bar {
+            background: var(--bg-light);
+            height: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-blue), #60a5fa);
+            width: 0%;
+            transition: width 0.6s ease;
+            border-radius: 8px;
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+        }
+
+        .lesson-section {
+            margin-bottom: 40px;
+        }
+
+        .lesson-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary-blue), #60a5fa);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .section-content {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        /* Interactive Email */
+        .email-simulator {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 16px;
+            padding: 32px;
+            margin: 32px 0;
+        }
+
+        .simulator-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .simulator-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #92400e;
+            margin-bottom: 8px;
+        }
+
+        .simulator-instruction {
+            font-size: 14px;
+            color: #78350f;
+            font-weight: 600;
+        }
+
+        .fake-email {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .email-field {
+            margin-bottom: 12px;
+        }
+
+        .email-field strong {
+            color: var(--text-muted);
+            display: inline-block;
+            width: 60px;
+        }
+
+        .highlightable {
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .highlightable:hover {
+            background: rgba(220, 38, 38, 0.1);
+            transform: scale(1.02);
+        }
+
+        .highlightable.found {
+            background: rgba(22, 163, 74, 0.2);
+            font-weight: 600;
+        }
+
+        .email-link {
+            color: var(--primary-blue);
+            text-decoration: underline;
+            font-weight: 600;
+        }
+
+        .email-body {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: var(--success-green);
+        }
+
+        .feedback.wrong {
+            background: #fee2e2;
+            color: var(--error-red);
+        }
+
+        .feedback.complete {
+            background: linear-gradient(135deg, #dcfce7, #86efac);
+            color: #166534;
+            font-size: 16px;
+        }
+
+        .progress-tracker {
+            text-align: center;
+            margin-top: 16px;
+            font-size: 14px;
+            color: #78350f;
+            font-weight: 600;
+        }
+
+        /* Red Flags Legend */
+        .legend-box {
+            background: #fef2f2;
+            border-left: 4px solid var(--error-red);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 32px 0;
+        }
+
+        .legend-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #991b1b;
+            margin-bottom: 16px;
+        }
+
+        .legend-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .legend-list li {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #7f1d1d;
+            margin-bottom: 12px;
+            padding-left: 28px;
+            position: relative;
+        }
+
+        .legend-list li::before {
+            content: '🚨';
+            position: absolute;
+            left: 0;
+        }
+
+        .legend-list li strong {
+            color: #991b1b;
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-btn-prev {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .nav-btn-prev:hover {
+            background: #e2e8f0;
+            transform: translateX(-4px);
+        }
+
+        .nav-btn-next {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+
+        .nav-btn-next:hover {
+            background: var(--primary-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37,99,235,0.4);
+        }
+
+        .nav-btn-home {
+            background: var(--primary-blue);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+        }
+
+        .nav-btn-home:hover {
+            background: var(--primary-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37,99,235,0.4);
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 16px;
+            }
+
+            .module-header {
+                padding: 24px;
+            }
+
+            .module-title {
+                font-size: 24px;
+            }
+
+            .lesson-content {
+                padding: 24px;
+            }
+
+            .email-simulator {
+                padding: 24px;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+            <a href="{{ url_for('home') }}" class="btn" style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-decoration: none; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span>Home</span>
+            </a>
+    <!-- Language Switch -->
+    <div class="lang-switch">
+        <a href="{{ url_for('set_lang', lang='en') }}" class="lang-btn {% if lang == 'en' %}active{% endif %}" style="text-decoration:none;display:inline-block;">English</a>
+        <a href="{{ url_for('set_lang', lang='uz') }}" class="lang-btn {% if lang == 'uz' %}active{% endif %}" style="text-decoration:none;display:inline-block;">O'zbek</a>
+    </div>
+
+    <div class="page-container">
+        <!-- Module Header -->
+        <div class="module-header">
+            <div class="module-badge">
+                <span>📚</span>
+                <span data-translate="module-badge">Module 1 - Lesson 3</span>
+            </div>
+            <h1 class="module-title" data-translate="module-title">Spotting red flags</h1>
+            <p class="module-subtitle" data-translate="module-subtitle">
+                Master the art of identifying suspicious emails, links, and messages before they cause harm
+            </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-label">
+                <span class="progress-text" data-translate="progress-text">Lesson progress</span>
+                <span class="progress-percentage" id="progressPercentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Introduction -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">🎯</span>
+                    <span data-translate="section1-title">Today's goal</span>
+                </h2>
+                <p class="section-content" data-translate="section1-content">
+                    In this lesson, you'll learn how to <strong>spot warning signs ("red flags")</strong> that indicate an email might be a phishing attempt. Look carefully — attackers often use psychological tricks, fake domains, and visual design to fool you.
+                </p>
+            </div>
+
+            <!-- Interactive Email Simulator -->
+            <div class="email-simulator">
+                <div class="simulator-header">
+                    <div class="simulator-title" data-translate="simulator-title">🔍 Example: Suspicious email</div>
+                    <div class="simulator-instruction" data-translate="simulator-instruction">
+                        Click on the parts of the email below that seem suspicious
+                    </div>
+                </div>
+
+                <div class="fake-email">
+                    <div class="email-field">
+                        <strong>From:</strong> 
+                        <span class="highlightable" data-flag="sender">security@microsoft-support.com</span>
+                    </div>
+                    <div class="email-field">
+                        <strong>To:</strong> You
+                    </div>
+                    <div class="email-field">
+                        <strong>Subject:</strong> <span data-translate="email-subject">Important! Your account has been suspended.</span>
+                    </div>
+
+                    <div class="email-body">
+                        <p data-translate="email-greeting">Dear user,</p>
+                        <p data-translate="email-body1">
+                            We noticed suspicious activity on your account. Please verify your information immediately to prevent termination of your access.
+                        </p>
+                        <p>
+                            <span class="highlightable email-link" data-flag="link" data-translate="email-link">Verify Account Now</span>
+                        </p>
+                        <p data-translate="email-signature">
+                            Thank you,<br>
+                            Microsoft Security Team
+                        </p>
+                        <p class="highlightable" data-flag="grammar" data-translate="email-note">
+                            (Note: We apologies for any inconviennce caused.)
+                        </p>
+                    </div>
+                </div>
+
+                <div class="feedback" id="feedback"></div>
+                <div class="progress-tracker" id="progressTracker">
+                    <span data-translate="tracker-text">Red flags found:</span> <span id="foundCount">0</span> / 3
+                </div>
+            </div>
+
+            <!-- Red Flags Legend -->
+            <div class="legend-box">
+                <div class="legend-title">
+                    <span>🚨</span>
+                    <span data-translate="legend-title">Common red flags you should always check</span>
+                </div>
+                <ul class="legend-list">
+                    <li data-translate="flag1">
+                        <strong>Sender's address:</strong> Misspelled or fake domains (e.g., "micros0ft").
+                    </li>
+                    <li data-translate="flag2">
+                        <strong>Links:</strong> Hover before clicking — check if they lead to real company sites.
+                    </li>
+                    <li data-translate="flag3">
+                        <strong>Urgency:</strong> Messages that say "immediately," "urgent," or "your account will be deleted."
+                    </li>
+                    <li data-translate="flag4">
+                        <strong>Spelling/Grammar errors:</strong> Poorly written text often signals phishing.
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <a href="{{ url_for('home') }}" class="nav-btn nav-btn-prev">
+                    <span>⬅️</span>
+                    <span data-translate="btn-prev">Previous lesson</span>
+                </a>
+                <a href="{{ url_for('lesson', module=1, lesson=4) }}" class="nav-btn nav-btn-next">
+                    <span data-translate="btn-next">Next lesson</span>
+                    <span>➡️</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Translations
+        const translations = {
+            en: {
+                'module-badge': 'Module 1 - Lesson 3',
+                'module-title': 'Spotting red flags',
+                'module-subtitle': 'Master the art of identifying suspicious emails, links, and messages before they cause harm',
+                'progress-text': 'Lesson progress',
+                'section1-title': 'Today\'s goal',
+                'section1-content': 'In this lesson, you\'ll learn how to spot warning signs ("red flags") that indicate an email might be a phishing attempt. Look carefully — attackers often use psychological tricks, fake domains, and visual design to fool you.',
+                'simulator-title': '🔍 Example: Suspicious email',
+                'simulator-instruction': 'Click on the parts of the email below that seem suspicious',
+                'email-subject': 'Important! Your account has been suspended.',
+                'email-greeting': 'Dear user,',
+                'email-body1': 'We noticed suspicious activity on your account. Please verify your information immediately to prevent termination of your access.',
+                'email-link': 'Verify Account Now',
+                'email-signature': 'Thank you,\nMicrosoft Security Team',
+                'email-note': '(Note: We apologies for any inconviennce caused.)',
+                'tracker-text': 'Red flags found:',
+                'legend-title': 'Common red flags you should always check',
+                'flag1': 'Sender\'s address: Misspelled or fake domains (e.g., "micros0ft").',
+                'flag2': 'Links: Hover before clicking — check if they lead to real company sites.',
+                'flag3': 'Urgency: Messages that say "immediately," "urgent," or "your account will be deleted."',
+                'flag4': 'Spelling/Grammar errors: Poorly written text often signals phishing.',
+                'btn-prev': 'Previous lesson',
+                'btn-next': 'Next lesson',
+                'feedback-sender': '✅ Correct! The sender domain is fake (micros0ft instead of microsoft).',
+                'feedback-link': '✅ Good catch! Always hover to see where a link really leads.',
+                'feedback-grammar': '✅ Right! Grammar and spelling errors are common in phishing emails.',
+                'feedback-wrong': '❌ Not a red flag. Look more carefully.',
+                'feedback-complete': '🎉 Great job! You found all the red flags!'
+            },
+            uz: {
+                'module-badge': '1-modul - 3-dars',
+                'module-title': 'Xavfli belgilarni aniqlash',
+                'module-subtitle': 'Shubhali elektron xatlar, havolalar va xabarlarni zarar yetkazishdan oldin aniqlash san\'atini o\'zlashtiiring',
+                'progress-text': 'Dars jarayoni',
+                'section1-title': 'Bugungi maqsad',
+                'section1-content': 'Ushbu darsda siz elektron xat fishing urinishi bo\'lishi mumkinligini ko\'rsatadigan ogohlantirish belgilarini ("xavfli belgilar") aniqlashni o\'rganasiz. Diqqat bilan qarang — hujumchilar sizni aldash uchun ko\'pincha psixologik hiyla-nayranglar, soxta domenlar va vizual dizayndan foydalanadilar.',
+                'simulator-title': '🔍 Misol: Shubhali elektron xat',
+                'simulator-instruction': 'Quyidagi elektron xatning shubhali ko\'rinadigan qismlarini bosing',
+                'email-subject': 'Muhim! Hisobingiz to\'xtatildi.',
+                'email-greeting': 'Hurmatli foydalanuvchi,',
+                'email-body1': 'Biz hisobingizda shubhali faollik aniqladik. Kirishingizni to\'xtatishning oldini olish uchun ma\'lumotlaringizni zudlik bilan tasdiqlang.',
+                'email-link': 'Hisobni Hozir Tasdiqlang',
+                'email-signature': 'Rahmat,\nMicrosoft Xavfsizlik Jamoasi',
+                'email-note': '(Eslatma: Yuzaga kelgan noqulayliklar uchun uzr so\'raymiz.)',
+                'tracker-text': 'Topilgan xavfli belgilar:',
+                'legend-title': 'Har doim tekshirib ko\'rishingiz kerak bo\'lgan umumiy xavfli belgilar',
+                'flag1': 'Jo\'natuvchi manzili: Noto\'g\'ri yozilgan yoki soxta domenlar (masalan, "micros0ft").',
+                'flag2': 'Havolalar: Bosishdan oldin ustiga olib boring — ular haqiqiy kompaniya saytlariga olib boradimi yoki yo\'qligini tekshiring.',
+                'flag3': 'Shoshilinchlik: "Zudlik bilan", "shoshilinch" yoki "hisobingiz o\'chiriladi" degan xabarlar.',
+                'flag4': 'Imlo/Grammatika xatolari: Yomon yozilgan matn ko\'pincha fishingni bildiradi.',
+                'btn-prev': 'Oldingi dars',
+                'btn-next': 'Keyingi dars',
+                'feedback-sender': '✅ To\'g\'ri! Jo\'natuvchi domeni soxta (microsoft o\'rniga micros0ft).',
+                'feedback-link': '✅ Yaxshi ushladingiz! Havola haqiqatan ham qayerga olib borishini ko\'rish uchun har doim ustiga olib boring.',
+                'feedback-grammar': '✅ To\'g\'ri! Grammatika va imlo xatolari fishing xatlarida keng tarqalgan.',
+                'feedback-wrong': '❌ Bu xavfli belgi emas. Diqqat bilan qarang.',
+                'feedback-complete': '🎉 Ajoyib ish! Siz barcha xavfli belgilarni topdingiz!'
+            }
+        };
+
+        // Language seed: Flask session is authoritative
+        const currentLang = '{{ lang }}' || localStorage.getItem('phishguard_lang') || 'en';
+        localStorage.setItem('phishguard_lang', currentLang);
+        const foundFlags = new Set();
+        const totalFlags = 3;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLanguage();
+            setupInteractiveEmail();
+            updateProgress(100);
+        });
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.dataset.translate;
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    if (element.tagName === 'P' && key.includes('signature')) {
+                        element.innerHTML = translations[currentLang][key].replace(/\n/g, '<br>');
+                    } else {
+                        element.textContent = translations[currentLang][key];
+                    }
+                }
+            });
+        }
+
+        function updateProgress(percentage) {
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+            document.getElementById('progressPercentage').textContent = `${percentage}%`;
+        }
+
+        function setupInteractiveEmail() {
+            const highlightables = document.querySelectorAll('.highlightable');
+            
+            highlightables.forEach(element => {
+                element.addEventListener('click', function() {
+                    const flag = this.dataset.flag;
+                    
+                    if (!flag) {
+                        showFeedback('wrong', translations[currentLang]['feedback-wrong']);
+                        return;
+                    }
+
+                    if (foundFlags.has(flag)) {
+                        return; // Already found
+                    }
+
+                    foundFlags.add(flag);
+                    this.classList.add('found');
+
+                    // Show feedback
+                    const feedbackKey = `feedback-${flag}`;
+                    showFeedback('correct', translations[currentLang][feedbackKey]);
+
+                    // Update counter
+                    document.getElementById('foundCount').textContent = foundFlags.size;
+
+                    // Check if all found
+                    if (foundFlags.size === totalFlags) {
+                        setTimeout(() => {
+                            showFeedback('complete', translations[currentLang]['feedback-complete']);
+                        }, 1500);
+                    }
+                });
+            });
+        }
+
+        function showFeedback(type, message) {
+            const feedback = document.getElementById('feedback');
+            if (!feedback) return;
+            feedback.textContent = message;
+            // Reset classes, then set the appropriate one
+            feedback.className = 'feedback show ' + type;
+        }
+    </script>
+</body>
+</html>

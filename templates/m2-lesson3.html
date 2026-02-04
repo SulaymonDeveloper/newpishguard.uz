@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2 - Lesson 3: Telegram Protection - PhishGuard.uz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #2563eb;
+            --primary-blue-dark: #1d4ed8;
+            --bg-gradient-start: #3b82f6;
+            --bg-gradient-end: #2563eb;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-white: #ffffff;
+            --bg-light: #f1f5f9;
+            --border-color: #e2e8f0;
+            --error-red: #dc2626;
+            --success-green: #16a34a;
+            --warning-yellow: #f59e0b;
+            --telegram-blue: #0088cc;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(37,99,235,0.12);
+            --shadow-lg: 0 20px 40px rgba(37,99,235,0.15);
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .page-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .lang-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: white;
+            color: var(--primary-blue);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .lang-btn:hover:not(.active) {
+            background: rgba(255,255,255,0.15);
+        }
+
+        /* Header */
+        .module-header {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: slideDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--success-green), #4ade80);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .module-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .module-subtitle {
+            font-size: 16px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            background: white;
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .progress-percentage {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        .progress-bar {
+            background: var(--bg-light);
+            height: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success-green), #4ade80);
+            width: 0%;
+            transition: width 0.6s ease;
+            border-radius: 8px;
+        }
+
+        /* Lesson Content */
+        .lesson-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 24px;
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+        }
+
+        .lesson-section {
+            margin-bottom: 40px;
+        }
+
+        .lesson-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--success-green), #4ade80);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        /* Protection Steps */
+        .protection-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .protection-list li {
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border-left: 4px solid var(--success-green);
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+        }
+
+        .protection-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .protection-content {
+            flex: 1;
+        }
+
+        .protection-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+        }
+
+        .protection-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #166534;
+        }
+
+        .protection-text em {
+            font-style: normal;
+            font-weight: 600;
+            color: var(--success-green);
+        }
+
+        /* Quiz Section */
+        .quiz-section {
+            background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 40px;
+        }
+
+        .quiz-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #5b21b6;
+            margin-bottom: 16px;
+        }
+
+        .quiz-instruction {
+            color: #6b21a8;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .quiz-question {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .question-label {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .question-text {
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .quiz-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .quiz-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 20px;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-btn.safe {
+            background: white;
+            border-color: var(--success-green);
+            color: var(--success-green);
+        }
+
+        .quiz-btn.safe:hover:not(.disabled) {
+            background: var(--success-green);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .quiz-btn.danger {
+            background: white;
+            border-color: var(--error-red);
+            color: var(--error-red);
+        }
+
+        .quiz-btn.danger:hover:not(.disabled) {
+            background: var(--error-red);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .quiz-btn.disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .feedback {
+            margin-top: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideDown 0.4s ease;
+        }
+
+        .feedback.correct {
+            background: #dcfce7;
+            color: var(--success-green);
+        }
+
+        .feedback.incorrect {
+            background: #fee2e2;
+            color: var(--error-red);
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 32px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .nav-btn-prev {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        .nav-btn-prev:hover {
+            background: #e2e8f0;
+            transform: translateX(-4px);
+        }
+
+        .nav-btn-home {
+            background: var(--success-green);
+            color: white;
+            box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+        }
+
+        .nav-btn-home:hover {
+            background: #15803d;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(22, 163, 74, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 16px;
+            }
+
+            .module-header {
+                padding: 24px;
+            }
+
+            .module-title {
+                font-size: 24px;
+            }
+
+            .lesson-content {
+                padding: 24px;
+            }
+
+            .quiz-section {
+                padding: 24px;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                max-width: 100%;
+            }
+
+            .quiz-buttons {
+                flex-direction: column;
+            }
+
+            .quiz-btn {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+            <a href="{{ url_for('home') }}" class="btn" style="position: fixed; top: 20px; left: 20px; z-index: 1000; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: white; padding: 12px 20px; text-decoration: none; border-radius: 12px; display: flex; align-items: center; gap: 8px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                <span>Home</span>
+            </a>
+    <!-- Language Switch -->
+    <div class="lang-switch">
+        <button class="lang-btn active" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="uz">O'zbek</button>
+    </div>
+
+    <div class="page-container">
+        <!-- Module Header -->
+        <div class="module-header">
+            <div class="module-badge">
+                <span>🛡️</span>
+                <span data-translate="module-badge">Module 2 - Lesson 3</span>
+            </div>
+            <h1 class="module-title" data-translate="module-title">How to protect yourself from Telegram phishing</h1>
+            <p class="module-subtitle" data-translate="module-subtitle">
+                Learn essential security practices to keep your Telegram account safe from attackers
+            </p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-container">
+            <div class="progress-label">
+                <span class="progress-text" data-translate="progress-text">Lesson progress</span>
+                <span class="progress-percentage" id="progressPercentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Lesson Content -->
+        <div class="lesson-content">
+            <!-- Protection Steps -->
+            <div class="lesson-section">
+                <h2 class="section-title">
+                    <span class="section-icon">🔒</span>
+                    <span data-translate="steps-title">Key protection steps</span>
+                </h2>
+
+                <ul class="protection-list">
+                    <li>
+                        <div class="protection-icon">✅</div>
+                        <div class="protection-content">
+                            <div class="protection-title" data-translate="step1-title">Enable two-step verification</div>
+                            <div class="protection-text" data-translate="step1-text">
+                                Enable two-step verification in Telegram settings to protect your account even if someone gets your code.
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="protection-icon">🔍</div>
+                        <div class="protection-content">
+                            <div class="protection-title" data-translate="step2-title">Recognize fake usernames</div>
+                            <div class="protection-text" data-translate="step2-text">
+                                Official accounts are always spelled correctly (e.g. @TelegramSupport vs fake @Teleqram_Support).
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="protection-icon">🚫</div>
+                        <div class="protection-content">
+                            <div class="protection-title" data-translate="step3-title">Never share your OTP or login codes</div>
+                            <div class="protection-text" data-translate="step3-text">
+                                Never share codes with anyone, even if they claim to be Telegram support or threaten to ban you.
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="protection-icon">🧠</div>
+                        <div class="protection-content">
+                            <div class="protection-title" data-translate="step4-title">Check URLs carefully</div>
+                            <div class="protection-text" data-translate="step4-text">
+                                Real Telegram links use <em>telegram.org</em> or <em>t.me</em>, not random domains.
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Practice Quiz -->
+            <div class="quiz-section">
+                <div class="quiz-title">
+                    <span>📋</span>
+                    <span data-translate="quiz-title">Practice quiz: what should you do?</span>
+                </div>
+                <p class="quiz-instruction" data-translate="quiz-instruction">
+                    Read each situation and choose the safest action.
+                </p>
+
+                <!-- Question 1 -->
+                <div class="quiz-question" id="q1">
+                    <p class="question-label" data-translate="q1-label">Situation 1:</p>
+                    <p class="question-text" data-translate="q1-text">
+                        You receive a message from @Teleqram_Support asking for your OTP code.
+                    </p>
+                    <div class="quiz-buttons">
+                        <button class="quiz-btn safe" onclick="answerQuiz(1, true)" data-translate="q1-safe">
+                            Ignore and report as fake
+                        </button>
+                        <button class="quiz-btn danger" onclick="answerQuiz(1, false)" data-translate="q1-danger">
+                            Send OTP code
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback1"></div>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="quiz-question" id="q2">
+                    <p class="question-label" data-translate="q2-label">Situation 2:</p>
+                    <p class="question-text" data-translate="q2-text">
+                        A bot offers you free Telegram Premium if you log in with your phone number.
+                    </p>
+                    <div class="quiz-buttons">
+                        <button class="quiz-btn safe" onclick="answerQuiz(2, true)" data-translate="q2-safe">
+                            Do not share details and leave chat
+                        </button>
+                        <button class="quiz-btn danger" onclick="answerQuiz(2, false)" data-translate="q2-danger">
+                            Enter number
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback2"></div>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="quiz-question" id="q3">
+                    <p class="question-label" data-translate="q3-label">Situation 3:</p>
+                    <p class="question-text" data-translate="q3-text">
+                        You forgot to enable two-step verification on Telegram.
+                    </p>
+                    <div class="quiz-buttons">
+                        <button class="quiz-btn safe" onclick="answerQuiz(3, true)" data-translate="q3-safe">
+                            Enable it immediately in settings
+                        </button>
+                        <button class="quiz-btn danger" onclick="answerQuiz(3, false)" data-translate="q3-danger">
+                            Ignore for now
+                        </button>
+                    </div>
+                    <div class="feedback" id="feedback3"></div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation">
+                <a href="{{ url_for('lesson', module=2, lesson=2) }}" class="nav-btn nav-btn-prev">
+                    <span>⬅️</span>
+                    <span data-translate="btn-prev">Previous lesson</span>
+                </a>
+                <a href="{{ url_for('lesson', module=2, lesson=4) }}" class="nav-btn nav-btn-home">
+                    <span data-translate="btn-next">Next lesson</span>
+                    <span>➡️</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translations
+        const translations = {
+            en: {
+                'module-badge': 'Module 2 - Lesson 3',
+                'module-title': 'How to protect yourself from Telegram phishing',
+                'module-subtitle': 'Learn essential security practices to keep your Telegram account safe from attackers',
+                'progress-text': 'Lesson progress',
+                'steps-title': 'Key protection steps',
+                'step1-title': 'Enable two-step verification',
+                'step1-text': 'Enable two-step verification in Telegram settings to protect your account even if someone gets your code.',
+                'step2-title': 'Recognize fake usernames',
+                'step2-text': 'Official accounts are always spelled correctly (e.g. @TelegramSupport vs fake @Teleqram_Support).',
+                'step3-title': 'Never share your OTP or login codes',
+                'step3-text': 'Never share codes with anyone, even if they claim to be Telegram support or threaten to ban you.',
+                'step4-title': 'Check URLs carefully',
+                'step4-text': 'Real Telegram links use telegram.org or t.me, not random domains.',
+                'quiz-title': 'Practice quiz: what should you do?',
+                'quiz-instruction': 'Read each situation and choose the safest action.',
+                'q1-label': 'Situation 1:',
+                'q1-text': 'You receive a message from @Teleqram_Support asking for your OTP code.',
+                'q1-safe': 'Ignore and report as fake',
+                'q1-danger': 'Send OTP code',
+                'q2-label': 'Situation 2:',
+                'q2-text': 'A bot offers you free Telegram Premium if you log in with your phone number.',
+                'q2-safe': 'Do not share details and leave chat',
+                'q2-danger': 'Enter number',
+                'q3-label': 'Situation 3:',
+                'q3-text': 'You forgot to enable two-step verification on Telegram.',
+                'q3-safe': 'Enable it immediately in settings',
+                'q3-danger': 'Ignore for now',
+                'btn-prev': 'Previous lesson',
+                'btn-next': 'Next lesson',
+                'alert-correct': '✅ Correct! That\'s the safest response — always protect your account and verify legitimacy.',
+                'alert-incorrect': '⚠️ Incorrect. Never share personal data or codes. Always use official Telegram settings.'
+            },
+            uz: {
+                'module-badge': '2-modul - 3-dars',
+                'module-title': 'Telegram fishingdan qanday himoyalanish',
+                'module-subtitle': 'Telegram hisobingizni hujumchilardan xavfsiz saqlash uchun zarur xavfsizlik amaliyotlarini bilib oling',
+                'progress-text': 'Dars jarayoni',
+                'steps-title': 'Asosiy himoya qadamlari',
+                'step1-title': 'Ikki bosqichli tekshiruvni yoqish',
+                'step1-text': 'Kimdir kodingizni olgan taqdirda ham hisobingizni himoya qilish uchun Telegram sozlamalarida ikki bosqichli tekshiruvni yoqing.',
+                'step2-title': 'Soxta foydalanuvchi nomlarini tanib olish',
+                'step2-text': 'Rasmiy hisoblar har doim to\'g\'ri yoziladi (masalan, @TelegramSupport vs soxta @Teleqram_Support).',
+                'step3-title': 'Hech qachon OTP yoki kirish kodlaringizni ulashmang',
+                'step3-text': 'Kodlaringizni hech kimga ulashmang, hatto ular Telegram qo\'llab-quvvatlashi deb da\'vo qilsa yoki sizni bloklash bilan tahdid qilsa ham.',
+                'step4-title': 'URL manzillarini diqqat bilan tekshiring',
+                'step4-text': 'Haqiqiy Telegram havolalari telegram.org yoki t.me dan foydalanadi, tasodifiy domenlardan emas.',
+                'quiz-title': 'Amaliy test: nima qilishingiz kerak?',
+                'quiz-instruction': 'Har bir vaziyatni o\'qing va eng xavfsiz harakatni tanlang.',
+                'q1-label': '1-vaziyat:',
+                'q1-text': 'Sizga @Teleqram_Support dan OTP kodingizni so\'rovchi xabar keladi.',
+                'q1-safe': 'E\'tiborsiz qoldiring va soxta sifatida xabar bering',
+                'q1-danger': 'OTP kodini yuboring',
+                'q2-label': '2-vaziyat:',
+                'q2-text': 'Bot sizga telefon raqamingiz bilan kirsangiz bepul Telegram Premium taklif qiladi.',
+                'q2-safe': 'Ma\'lumotlarni ulashmaslik va suhbatni tark etish',
+                'q2-danger': 'Raqamni kiriting',
+                'q3-label': '3-vaziyat:',
+                'q3-text': 'Siz Telegramda ikki bosqichli tekshiruvni yoqishni unutdingiz.',
+                'q3-safe': 'Uni darhol sozlamalarda yoqish',
+                'q3-danger': 'Hozircha e\'tiborsiz qoldirish',
+                'btn-prev': 'Oldingi dars',
+                'btn-next': 'Keyingi dars',
+                'alert-correct': '✅ To\'g\'ri! Bu eng xavfsiz javob — har doim hisobingizni himoya qiling va qonuniyligini tekshiring.',
+                'alert-incorrect': '⚠️ Noto\'g\'ri. Hech qachon shaxsiy ma\'lumotlar yoki kodlarni ulashmang. Har doim rasmiy Telegram sozlamalaridan foydalaning.'
+            }
+        };
+
+        let currentLang = localStorage.getItem('language') || 'en';
+        const answeredQuestions = new Set();
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                if (btn.dataset.lang === currentLang) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            updateLanguage();
+            
+            initLanguage();
+            updateProgress(100);
+        });
+
+        function initLanguage() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === currentLang);
+            });
+            updateLanguage();
+        }
+
+        // Language switching
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentLang = btn.dataset.lang;
+                localStorage.setItem('language', currentLang);
+                updateLanguage();
+            });
+        });
+
+        function updateLanguage() {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.dataset.translate;
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+        }
+
+        function updateProgress(percentage) {
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+            document.getElementById('progressPercentage').textContent = `${percentage}%`;
+        }
+
+        function answerQuiz(questionNum, isCorrect) {
+            if (answeredQuestions.has(questionNum)) return;
+
+            answeredQuestions.add(questionNum);
+            const questionBox = document.getElementById('q' + questionNum);
+            const buttons = questionBox.querySelectorAll('.quiz-btn');
+            const feedback = document.getElementById('feedback' + questionNum);
+
+            // Disable buttons
+            buttons.forEach(btn => btn.classList.add('disabled'));
+
+            // Show feedback below the question
+            if (isCorrect) {
+                feedback.textContent = translations[currentLang]['alert-correct'];
+                feedback.className = 'feedback show correct';
+            } else {
+                feedback.textContent = translations[currentLang]['alert-incorrect'];
+                feedback.className = 'feedback show incorrect';
+            }
+        }
+    </script>
+</body>
+</html>
